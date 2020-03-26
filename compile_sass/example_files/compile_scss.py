@@ -7,7 +7,7 @@ args = {
     'dir'        : './',
     'ext'        : '.scss',
     'output_dir' : './',
-    'output_name': 'main.css',
+    'output_name': 'index.css',
     'format'     : 'expanded',
 }
 

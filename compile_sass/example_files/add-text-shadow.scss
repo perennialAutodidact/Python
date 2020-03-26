@@ -1,0 +1,3 @@
+@mixin add-text-shadow($vert, $horz, $size, $color) {
+    text-shadow: $vert $horz $size $color;
+}
