@@ -1,0 +1,12 @@
+@import 'variables.scss';
+
+.container {
+    background: $bg;
+
+    a {
+        color: $color1;
+    }
+    div {
+        background: $color2;
+    }
+}
