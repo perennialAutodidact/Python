@@ -1,4 +1,4 @@
-# Compile Sass
+# Compile SCSS
 
 A CLI utility for compiling multiple SCSS files into a single CSS file to avoid linking a million CSS files within a project.
 
