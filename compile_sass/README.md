@@ -4,7 +4,7 @@ A CLI utility for compiling multiple SCSS files into a single CSS file to avoid 
 
 ## Usage
 
-Place `compile_scss.py` in the same directory as .scss files.
+Place `compile_scss.py` in the same directory as SCSS files.
 
 Run `python compile_scss.py`
 
