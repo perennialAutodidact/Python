@@ -1,5 +1,6 @@
 import os
 import sys
+import shutil
 import sass
 
 sys_args = sys.argv[1::]
@@ -34,4 +35,8 @@ with open(args['output_name'], 'a+') as css_file:
     css_file.truncate(0)
     css_file.write(compiled_sass)
 
-os.rename(f"{args['dir']}{args['output_name']}", f"{args['output_dir']}{args['output_name']}")
+original_path = f"{args['dir']}{args['output_name']}"
+destination_path = f"{args['output_dir']}{args['output_name']}"
+
+shutil.copyfile(original_path, destination_path)
+os.remove(original_path)
