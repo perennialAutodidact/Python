@@ -29,6 +29,42 @@ def dir_contains_extension(dir, ext):
     else:
         raise click.BadParameter(f"The path: '{dir}' does not contain any files with the {ext} extension.")
 
+def get_extension(file_name):
+    '''
+    Returns a string containing the file extension of a given file
+    '''
+    return file_name.split('.')[-1]
+
+def get_raw_scss(directory, scss_files):
+    '''
+    Iterates over a list of files. If the file's extension is .scss,
+        open it, read its contents and add them to a string of raw SCSS.
+        Returns raw SCSS data
+    '''
+    raw_scss = ''
+    scss_vars = ''
+    for file_name in scss_files:
+        if get_extension(file_name) == 'scss':
+            file_path = directory + file_name
+            with open(file_path, 'r') as scss_file:
+                raw_scss += '\n'
+
+                for line in scss_file.readlines():
+                    if '@import' in line:
+                        continue
+                    elif line[0] == '$':
+                        scss_vars += line
+                        continue
+                    else:
+                        raw_scss += line
+
+
+    raw_scss = scss_vars + raw_scss
+    return raw_scss
+
+# def make_css(raw_scss):
+
+
 # @click.option('--config', default=None, 
 #                 help='Optional path to config.txt file containing predefined set of options')
 @click.option('--scss_dir', default='./', 
@@ -44,6 +80,8 @@ def compile_scss(scss_dir,css_dir,css_name,output_style):
     if valid_path(scss_dir):
         if dir_contains_extension(scss_dir, '.scss'):
             file_list = listdir(scss_dir)
-            print(file_list)
-       
+            
+            raw_scss = get_raw_scss(scss_dir, file_list)
 
+            compiled_css = sass.compile(string=raw_scss, output_style=f"{output_style}")
+            
