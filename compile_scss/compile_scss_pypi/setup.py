@@ -16,7 +16,9 @@ setup(
     python_requires=">=3.6",
     install_requires=[
         "libsass",
-        "Click"
+        "Click",
+        "os",
+        "shutil",
     ],
     entry_points='''
         [console_scripts]
