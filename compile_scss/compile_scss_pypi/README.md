@@ -1,6 +1,8 @@
 # Compile SCSS
 
-A CLI utility for compiling multiple SCSS files into a single CSS file to avoid linking a million CSS files within a project.
+v0.2.0
+
+A CLI utility for compiling multiple SCSS files into a single CSS file to avoid linking a million CSS files within a project. Compile SCSS utilizes Click to construct its CLI interface.
 
 ## Usage
 
@@ -21,11 +23,15 @@ By default, a CSS file named `index.css` will be generated in the same directory
 
 Currently `compile_scss.py` can be passed a variety of command line arguments to augment the output of your CSS.
 
-* `output_dir` - Target directory for the generated CSS file. Default is `./` which is the same directory as the SCSS files.
+* `--help` - Display help information on usage and options
 
-* `output_name` - Name of the generated CSS file. Default is `index.css`
+* `--root` - Root directory of SCSS file tree. This directory and its subdirectories will be traversed in search of all files with the `.scss` file extension.
 
-* `format` - Libsass' Sass.compile() function accepts an argument called `output_style`. This changes the formatting of the generated CSS. The following values are valid:
+* `--css_dir` - Target directory for the generated CSS file. Default is `./` which is the same directory as the SCSS files.
+
+* `--css_name` - Name of the generated CSS file. Default is `index.css`
+
+* `--output_style` - Libsass' Sass.compile() function accepts an argument called `output_style`. This changes the formatting of the generated CSS. The following values are valid:
 
   * nested
   * expanded
