@@ -17,8 +17,6 @@ setup(
     install_requires=[
         "libsass",
         "Click",
-        "os",
-        "shutil",
     ],
     entry_points='''
         [console_scripts]
