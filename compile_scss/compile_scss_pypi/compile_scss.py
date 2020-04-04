@@ -25,7 +25,6 @@ def valid_path(file_path):
         return file_path
     else:
         return False
-        # raise click.BadParameter(f"The directory {file_path} does not exist.")
 
 def dir_contains_extension(directory, extension):
     '''
@@ -40,7 +39,6 @@ def dir_contains_extension(directory, extension):
         return True
     else:
         return False
-        # raise click.BadParameter(f"The path: '{directory}' does not contain any files with the {extension} extension.")
 
 def get_extension(file_name):
     '''
@@ -126,8 +124,11 @@ def read_config(root):
 
     print(file_list)
     if 'config.json' in file_list:
-        print(path.join(path.abspath(root), 'config.json'))
-        with open(path.join(root, 'config.json'), 'r') as config:
+        full_path = path.join(root, 'config.json')
+
+        print(full_path)
+
+        with open(full_path, 'r') as config:
             options = json.load(config)
         return options
 
@@ -142,27 +143,30 @@ def read_config(root):
 @click.command()
 def compile_scss(root, css_dir, css_filename, output_style):
     options = read_config(root)
-    print(getcwd())
-    
+    print(options)
     if options != {}:
-        print(options)
-        # Get new option values from config.txt
-    else:
-        root = format_directory_name(root)
-        css_dir  = format_directory_name(css_dir)
- 
-        if valid_path(root):
-            file_tree_paths = get_include_paths(root)
+        # root = getcwd()
+        css_dir = options['css_dir']
+        css_filename = options['css_filename']
+        output_style = options['output_style']
 
-            if dir_contains_extension(root, '.scss'):
-                file_list = listdir(root)
-                
-                raw_scss = get_raw_scss(file_tree_paths)
+    print(f"{root=}, {css_dir=}, {css_filename=}, {output_style=}")
 
-                compiled_css = sass.compile(
-                    string=raw_scss, 
-                    output_style=f"{output_style}"
-                )
+    root = format_directory_name(root)
+    css_dir  = format_directory_name(css_dir)
 
-            write_css(compiled_css, css_dir, css_filename)
+    if valid_path(root):
+        file_tree_paths = get_include_paths(root)
+
+        if dir_contains_extension(root, '.scss'):
+            file_list = listdir(root)
+            
+            raw_scss = get_raw_scss(file_tree_paths)
+
+            compiled_css = sass.compile(
+                string=raw_scss, 
+                output_style=f"{output_style}"
+            )
+
+        write_css(compiled_css, css_dir, css_filename)
 

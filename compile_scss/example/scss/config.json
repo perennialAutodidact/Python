@@ -2,5 +2,5 @@
     "root"         : "../example/scss",
     "css_dir"      : "../example/css",
     "css_filename" : "index.css",
-    "output_style" : "compressed"
+    "output_style" : "expanded"
 }
