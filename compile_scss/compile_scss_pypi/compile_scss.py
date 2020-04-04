@@ -1,5 +1,6 @@
 import sass
 import click
+import json
 from os import path, listdir, remove, walk, getcwd
 from shutil import copyfile
 
@@ -117,11 +118,18 @@ def write_css(compiled_css, css_dir, css_filename):
 
     return
 
-def read_config():
+def read_config(root):
     '''
-        Open config.txt and create a dictionary of new option values to override defaults.
+        Open config.json and create a dictionary of new option values to override defaults.
     '''
-    pass
+    file_list = listdir(root)
+
+    print(file_list)
+    if 'config.json' in file_list:
+        print(path.join(path.abspath(root), 'config.json'))
+        with open(path.join(root, 'config.json'), 'r') as config:
+            options = json.load(config)
+        return options
 
 @click.option('--root', default='./', 
                 help='Path to directory containing SCSS files and subfolders with SCSS files. Default is ./')
@@ -133,12 +141,13 @@ def read_config():
                 help='Format of generated CSS. Options: expanded, nested, compact, compressed')
 @click.command()
 def compile_scss(root, css_dir, css_filename, output_style):
-    # options = read_config()
+    options = read_config(root)
+    print(getcwd())
     
-    # if options != {}:
-    #     pass
-    #     # Get new option values from config.txt
-    # else:
+    if options != {}:
+        print(options)
+        # Get new option values from config.txt
+    else:
         root = format_directory_name(root)
         css_dir  = format_directory_name(css_dir)
  
@@ -149,10 +158,6 @@ def compile_scss(root, css_dir, css_filename, output_style):
                 file_list = listdir(root)
                 
                 raw_scss = get_raw_scss(file_tree_paths)
-
-                include_paths=file_tree_paths['directories']
-
-                include_paths = [path.abspath(d) for d in file_tree_paths['directories']]
 
                 compiled_css = sass.compile(
                     string=raw_scss, 
