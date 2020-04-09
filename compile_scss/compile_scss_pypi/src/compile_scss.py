@@ -1,8 +1,8 @@
 import sass   # SCSS => CSS compiler
 import click  # For turning functions into terminal commands
 
-from .compiler_utilities import *  # extra functions for gathering SCSS and processing CSS
-from .observe_files import *  # Watchdog observer and associated functions
+from src.compiler_utilities import *  # extra functions for gathering SCSS and processing CSS
+from src.observe_files import *  # Watchdog observer and associated functions
 
 @click.option('--root', default='./', 
                 help='Path to directory containing SCSS files and subfolders with SCSS files. Default is ./')
@@ -15,7 +15,7 @@ from .observe_files import *  # Watchdog observer and associated functions
 @click.command()
 def compile_scss(root, css_dir, css_filename, output_style):
     options = read_config(root)
-    # print(options)
+    
     if options != {}:
         css_dir = options['css_dir']
         css_filename = options['css_filename']
