@@ -15,8 +15,8 @@ setup(
     packages=find_packages(exclude=[]),
     python_requires=">=3.6",
     install_requires=[
-        "libsass",
-        "Click",
+        "libsass>=0.19.4",
+        "Click>=7.1.1",
         "watchdog"
     ],
     entry_points={
