@@ -4,11 +4,25 @@ v0.5.0
 
 A CLI utility for compiling multiple SCSS files into a single CSS file to avoid linking a million CSS files within a project. Compile SCSS utilizes Click to construct its CLI interface.
 
+## To Do
+
+* setup watchdog to start observing user's root SCSS directory if user enters a --watch flag
+* print updated file paths to terminal on changes. Clear after a second or two
+  * <https://www.quora.com/How-can-I-delete-the-last-printed-line-in-Python-language>
+* config function that prompts user for input for each option and generates a config.json file in their root scss directory
+* Redo README
+* Write some tests
+* Publish to PyPi
+
+## Installation
+
+This doesn't work yet, but will soon:
+
+`pip install compile_scss`
+
 ## Usage
 
-Place `compile_scss.py` in the same directory as SCSS files.
-
-Run `python compile_scss.py`
+Run `compile_scss`
 
 By default, a CSS file named `index.css` will be generated in the same directory as the SCSS files.
 
