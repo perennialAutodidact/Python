@@ -1,6 +1,8 @@
 import sass
 import click
-from . import tools
+
+from .compiler_utilities import *
+from .observe_files import *
 
 @click.option('--root', default='./', 
                 help='Path to directory containing SCSS files and subfolders with SCSS files. Default is ./')
@@ -12,7 +14,7 @@ from . import tools
                 help='Format of generated CSS. Options: expanded, nested, compact, compressed')
 @click.command()
 def compile_scss(root, css_dir, css_filename, output_style):
-    options = tools.read_config(root)
+    options = read_config(root)
     print(options)
     if options != {}:
         # root = getcwd()
@@ -22,21 +24,21 @@ def compile_scss(root, css_dir, css_filename, output_style):
 
     print(f"{root=}, {css_dir=}, {css_filename=}, {output_style=}")
 
-    root = tools.format_directory_name(root)
-    css_dir  = tools.format_directory_name(css_dir)
+    root = format_directory_name(root)
+    css_dir  = format_directory_name(css_dir)
 
-    if tools.valid_path(root):
-        file_tree_paths = tools.get_include_paths(root)
+    if valid_path(root):
+        file_tree_paths = get_include_paths(root)
 
-        if tools.dir_contains_extension(root, '.scss'):
-            file_list = tools.listdir(root)
+        if dir_contains_extension(root, '.scss'):
+            file_list = listdir(root)
             
-            raw_scss = tools.get_raw_scss(file_tree_paths)
+            raw_scss = get_raw_scss(file_tree_paths)
 
         compiled_css = sass.compile(
             string=raw_scss, 
             output_style=f"{output_style}"
         )
 
-        tools.write_css(compiled_css, css_dir, css_filename)
+        write_css(compiled_css, css_dir, css_filename)
 
