@@ -6,7 +6,8 @@ A CLI utility for compiling multiple SCSS files into a single CSS file to avoid 
 
 ## To Do
 
-* setup watchdog to start observing user's root SCSS directory if user enters a --watch flag
+* setup and save compile_scss_config.json with sub-command **config**
+* setup watchdog to start observing user's root SCSS directory with subcommand **watch**
 * print updated file paths to terminal on changes. Clear after a second or two
   * <https://www.quora.com/How-can-I-delete-the-last-printed-line-in-Python-language>
 * config function that prompts user for input for each option and generates a config.json file in their root scss directory
