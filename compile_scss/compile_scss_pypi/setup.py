@@ -11,18 +11,16 @@ setup(
     long_description_context_type="text/markdown",
     author="Keegan Good",
     author_email="keegood8@gmail.com",
-    # py_modules=['compile_scss'],
+    py_modules=['compile_scss','tools'],
     packages=find_packages(exclude=[]),
     python_requires=">=3.6",
     install_requires=[
         "libsass",
         "Click",
     ],
-    entry_points='''
-        [console_scripts]
-        compile_scss=compile_scss:compile_scss
-    '''
-    ,
+    entry_points={
+        "console_scripts":["compile_scss=src.compile_scss:compile_scss"],
+    },
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Programming Language :: Python :: 3",
