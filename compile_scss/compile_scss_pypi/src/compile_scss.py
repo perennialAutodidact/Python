@@ -43,6 +43,7 @@ def compile_scss(root, css_dir, css_filename, output_style, config):
 
     print(options)
 
+    exit()
     root = format_directory_name(root)
     css_dir  = format_directory_name(css_dir)
 
