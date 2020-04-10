@@ -141,16 +141,16 @@ def read_config(root):
     config_file = 'compile_scss_config.json'
 
     options = None
-    # if config.json is in the list of files
+    # if config_file is in the list of files
     if config_file in file_list:
 
         options = {}
         full_path = path.join(root, config_file)
 
         # open the file, read the contents and parse
-        # json object into python dictionary
+        # json object into a dictionary
         with open(full_path, 'r') as config:
             options = json.load(config)
-
+            print(type(options))
     return options
-    
+
