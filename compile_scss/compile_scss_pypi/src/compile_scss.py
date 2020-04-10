@@ -1,9 +1,9 @@
 import sass   # SCSS => CSS compiler
 import click  # For turning functions into terminal commands
 
-from src.utilities import *  # extra functions for gathering SCSS and processing CSS
+from src.utilities import *      # extra functions for gathering SCSS and processing CSS
 from src.observe_files import *  # Watchdog observer and associated functions
-from src.config import *  # R.E.P.L for setting option values and generating JSON config file
+from src.config import *         # R.E.P.L for setting option values and generating JSON config file
 
 @click.option('--root', default='./', 
                 help='Path to directory containing SCSS files and subfolders with SCSS files. Default is ./')
@@ -17,7 +17,7 @@ from src.config import *  # R.E.P.L for setting option values and generating JSO
                 help='Check current configuration or set new values for compile_scss_config.json file.')
 @click.command()
 def compile_scss(root, css_dir, css_filename, output_style, config):
-    # if the config flag is True, set config, 
+    # if the config flag is True, run the set config module, 
     # otherwise try to read a config file from root directory
     if config:
         defaults = {
