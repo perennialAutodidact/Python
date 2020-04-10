@@ -133,17 +133,24 @@ def write_css(compiled_css, css_dir, css_filename):
 
 def read_config(root):
     '''
-        Open config.json and create a dictionary of new option values to override defaults.
+        Open compile_scss_config.json and create a dictionary
+        of new option values to override defaults.
+        returns a blank dictionary if no config file exists.
     '''
     file_list = listdir(root)
+    config_file = 'compile_scss_config.json'
 
+    options = None
     # if config.json is in the list of files
-    if 'config.json' in file_list:
+    if config_file in file_list:
 
-        full_path = path.join(root, 'config.json')
+        options = {}
+        full_path = path.join(root, config_file)
 
         # open the file, read the contents and parse
         # json object into python dictionary
         with open(full_path, 'r') as config:
             options = json.load(config)
-        return options
+
+    return options
+    

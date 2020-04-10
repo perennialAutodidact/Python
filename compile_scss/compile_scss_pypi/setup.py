@@ -11,7 +11,7 @@ setup(
     long_description_context_type="text/markdown",
     author="Keegan Good",
     author_email="keegood8@gmail.com",
-    py_modules=['compile_scss', 'compiler_utilities', 'observe_files'],
+    py_modules=['compile_scss', 'utilities', 'observe_files'],
     packages=find_packages(exclude=[]),
     python_requires=">=3.6",
     install_requires=[
