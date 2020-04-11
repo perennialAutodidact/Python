@@ -128,22 +128,26 @@ def write_css(raw_scss, options):
             then overwrites all contents with the compiled CSS.
     '''
 
-    compiled_css = sass.compile(
-        string=raw_scss, 
-        output_style=f"{options['output_style']}"
-    )
+    print(f"{raw_scss = }")
 
-    new_file_path = options['css_dir'] + options['css_filename']
+    if raw_scss != '':
+        compiled_css = sass.compile(
+            string=raw_scss, 
+            output_style=f"{options['output_style']}"
+        )
 
-    # open the target css file, otherwise create it
-    with open(new_file_path, 'a+') as css_file:
-        # remove all contents
-        css_file.truncate(0)
+        new_file_path = options['css_dir'] + options['css_filename']
 
-        # write new contents
-        css_file.write(compiled_css)
+        # open the target css file, otherwise create it
+        with open(new_file_path, 'a+') as css_file:
+            # remove all contents
+            css_file.truncate(0)
 
-    return
+            # write new contents
+            css_file.write(compiled_css)
+    else:
+        return "NO SCSS FOUND"
+    return 
 
 
 def read_config_file(root):

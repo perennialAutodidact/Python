@@ -1,6 +1,7 @@
 import click
 from src.utilities import valid_path, format_directory_name
 import re
+import json
 
 def set_config_file(options, config_loaded = False):
     '''
@@ -49,7 +50,8 @@ def set_config_file(options, config_loaded = False):
             click.echo("Goodbye!")
             exit()
 
-    print(f'{options = }')
+    write_config(options)
+    
     return options
 
 
@@ -128,7 +130,20 @@ def prompt_for_options(options):
                         break  # break output_style options loop
                 else:
                     break  # break while loop for current key
+        
         return options
+
+def write_config(options):
+    new_file_path = options['root'] + 'compile_scss_config.json'
+
+    # open the target config file, otherwise create it
+    with open(new_file_path, 'a+') as config_file:
+        # remove all contents
+        config_file.truncate(0)
+
+        # write new contents
+        contents = json.dumps(options, indent=4, separators=(',', ': '))
+        config_file.write(contents)
 
 def invalid_entry(entry, option_type):
     '''

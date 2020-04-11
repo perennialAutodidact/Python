@@ -53,5 +53,8 @@ def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
 
     file_tree = get_include_paths(scss_dir)
     raw_scss = get_raw_scss(file_tree, scss_dir)
-    write_css(raw_scss, options)
+    if raw_scss != '':
+        write_css(raw_scss, options)
+    else:
+        click.echo("No SCSS found")
 
