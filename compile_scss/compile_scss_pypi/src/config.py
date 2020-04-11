@@ -15,9 +15,10 @@ def set_config_file(options, config_loaded = False):
         '3': 'Exit',
     }
 
-    click.echo("-"*23)
-    click.echo("Configure Compile SCSS")
-    click.echo("-"*23+"\n")
+    msg = " Configure Compile SCSS "
+    click.echo("-"*len(msg))
+    click.echo(msg)
+    click.echo("-"*len(msg)+"\n")
 
     if not config_loaded:
         click.echo(f"No configuration file was found in the current root directory: {options['root']}\n")
@@ -59,7 +60,10 @@ def prompt_for_options(options):
     
     prompts = {
         'root': {
-            'msg': "the path to your SCSS directory"
+            'msg': "the path to your project's root directory"
+        },
+        'scss_dir':{
+            'msg': "the path to your main SCSS directory"
         },
         'css_dir': {
             'msg': "the path to your target CSS directory"
