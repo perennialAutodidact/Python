@@ -2,15 +2,16 @@ import click
 from src.utilities import valid_path
 import re
 
-def set_config(options):
+def set_config_file(options, config_loaded = False):
     '''
     Read, Evaluate, Print, Loop allowing the user to set 
     new option values and generating a JSON config file or 
     to return the default values set within compile_scss
     '''
+
     menu_options = {
-        '1': 'Setup configuration file',
-        '2': 'Use default option values',
+        '1': 'Change configuration file',
+        '2': 'Use current configuration',
         '3': 'Exit',
     }
 
@@ -18,8 +19,16 @@ def set_config(options):
     click.echo("Configure Compile SCSS")
     click.echo("-"*23+"\n")
 
+    if not config_loaded:
+        click.echo(f"No configuration file was found in the current root directory: {options['root']}\n")
+
+    if options != {}:
+        click.echo("Your current configuration:")
+        for key in options.keys():
+            click.echo(f"-{key}: {options[key]}")
+        
     while True:
-        click.echo("Please choose from the following options: \n")
+        click.echo("\nPlease choose from the following options: \n")
     
         #  display each menu option with it's message
         for number in menu_options.keys():
@@ -38,8 +47,7 @@ def set_config(options):
         elif choice == "3":
             click.echo("Goodbye!")
             exit()
-        else:
-            continue
+
     return options
 
 
@@ -118,6 +126,10 @@ def prompt_for_options(options):
         return options
 
 def invalid_entry(entry, option_type):
+    '''
+    Display an error message in the config REPL if an invalid entry is provided by ther user.
+    "Your entry: '{entry:str}' is not a valid {option_type:str}."
+    '''
     error = f"Your entry: '{entry}' is not a valid {option_type}."
     click.echo('\n' + '!'*(len(error) + 2))
     click.echo(f" {error} ")

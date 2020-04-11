@@ -13,35 +13,37 @@ from src.config import *         # R.E.P.L for setting option values and generat
                 help='Name of CSS output file. Default is index.css')
 @click.option('--output_style', default='expanded', 
                 help='Format of generated CSS. Options: expanded, nested, compact, compressed')
-@click.option('--config / --no-config', default=False, 
+@click.option('--config', is_flag=True,
                 help='Check current configuration or set new values for compile_scss_config.json file.')
 @click.command()
 def compile_scss(root, css_dir, css_filename, output_style, config):
-    # if the config flag is True, run the set config module, 
-    # otherwise try to read a config file from root directory
+    '''
+    Main command in Compile SCSS package.
+
+    Run: 'compile_scss --help' to view all usage options.
+    '''
+    defaults = {
+        'root'        : root,
+        'css_dir'     : css_dir,
+        'css_filename': css_filename,
+        'output_style': output_style,
+    }
+
+    # check for config file in root directory and 
+    # override defaults to config dict if found,
+    # otherwise, options = {}
+    options = read_config_file(root)
+
+    # if no config was found, set defaults dict to default options
+    if options == {}:
+        set_config_file(defaults)
+    else:
+        click.echo(f"\n*** Config file loaded: *** \n{path.join(path.abspath(root), 'compile_scss_config.json')}\n")
+
+    # if the --config flag is True, pass the default options
+    # to set_config_file to edit or create the config file
     if config:
-        defaults = {
-            'root':root,
-            'css_dir':css_dir,
-            'css_filename': css_filename,
-            'output_style': output_style,
-        }
-        options = set_config(defaults)
-    else:
-        options = read_config(root)
-
-    # if no config file is found in root directory,
-    # set config, otherwise, override default values
-    # with values from config file.
-    if options != None:
-        root = options['root']
-        css_dir = options['css_dir']
-        css_filename = options['css_filename']
-        output_style = options['output_style']
-    else:
-        options = set_config()
-
-    print(options)
+        options = set_config_file(defaults)
 
     exit()
     root = format_directory_name(root)
