@@ -1,5 +1,5 @@
 import click
-from src.utilities import valid_path
+from src.utilities import valid_path, format_directory_name
 import re
 
 def set_config_file(options, config_loaded = False):
@@ -49,6 +49,7 @@ def set_config_file(options, config_loaded = False):
             click.echo("Goodbye!")
             exit()
 
+    print(f'{options = }')
     return options
 
 
@@ -80,20 +81,19 @@ def prompt_for_options(options):
     filename_regex = r'[^\WA-Z0-9\-_][a-z-]+'
 
     while True:
-        click.echo("")
         for key in options.keys():
             while True:
                 prompt_message = prompts[key]['msg']
                 user_entry = click.prompt(f"Please enter {prompt_message}")
                 
-                options[key] = user_entry
                 # if prompt is for a directory path, 
                 # check that the directory exists
-                if 'path' in prompt_message:
+                if 'directory' in prompt_message:
                     if not valid_path(user_entry):
-                        invalid_entry(user_entry, 'path')
+                        invalid_entry(user_entry, 'directory')
                         continue
                     else:
+                        options[key] = format_directory_name(user_entry)
                         break  # break SCSS/CSS directory loops
 
                 # receive user value for CSS file name
@@ -113,7 +113,7 @@ def prompt_for_options(options):
                         )
                         continue
                     else:
-                        click.echo("VALID FILENAME")
+                        options[key] = user_entry + '.css'
                         break  # break file name loop
 
                 # if the prompt has additional options,
@@ -124,6 +124,7 @@ def prompt_for_options(options):
 
                         click.echo(f"Enter one of these: {', '.join(prompts[key]['options'])}\n")
                     else:
+                        options[key] = user_entry
                         break  # break output_style options loop
                 else:
                     break  # break while loop for current key

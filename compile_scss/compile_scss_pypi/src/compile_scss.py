@@ -39,29 +39,19 @@ def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
 
     # if no config was found, set defaults dict to default options
     if options == {}:
-        set_config_file(defaults)
+        options = set_config_file(defaults)
     else:
         click.echo(f"\n*** Config file loaded: *** \n{path.join(path.abspath(root), 'compile_scss_config.json')}\n")
 
     # if the --config flag is True, pass the default options
     # to set_config_file to edit or create the config file
     if config:
-        options = set_config_file(defaults)
+        options = set_config_file(defaults)    
 
-    exit()
-    root = format_directory_name(root)
-    css_dir  = format_directory_name(css_dir)
+    print(f"{options = }")
+    scss_dir = options['scss_dir']
 
-    if valid_path(root):
-        file_tree = get_include_paths(root)
-
-        if dir_contains_extension(root, '.scss'):
-            raw_scss = get_raw_scss(file_tree)
-
-        compiled_css = sass.compile(
-            string=raw_scss, 
-            output_style=f"{output_style}"
-        )
-
-        write_css(compiled_css, css_dir, css_filename)
+    file_tree = get_include_paths(scss_dir)
+    raw_scss = get_raw_scss(file_tree, scss_dir)
+    write_css(raw_scss, options)
 

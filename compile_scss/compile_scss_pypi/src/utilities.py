@@ -1,6 +1,8 @@
 import json
+import sass
 from os import path, listdir, remove, walk, getcwd
 from shutil import copyfile
+
 
 def format_directory_name(directory):
     '''
@@ -76,51 +78,62 @@ def get_include_paths(root):
     return file_tree
 
 
-def get_raw_scss(file_tree):
+def get_raw_scss(file_tree, scss_dir):
     '''
     Iterates over a list of files. If the file's extension is .scss,
         open it, read its contents and add them to a string of raw SCSS.
         Returns raw SCSS data
     '''
-    raw_scss = ''
-    scss_vars = ''
+    root = format_directory_name(scss_dir)
 
-    # For each file in the file tree
-    file_paths = file_tree['files']
-    for file_path in file_paths:
+    if valid_path(scss_dir):
+        file_tree = get_include_paths(scss_dir)
 
-        # if the file's extension is .scss
-        if get_extension(file_path) == 'scss':
+        if dir_contains_extension(scss_dir, '.scss'):
+            raw_scss = ''
+            scss_vars = ''
 
-            # open the file and add its contents to raw_scss variable
-            with open(file_path, 'r') as scss_file:
-                raw_scss += '\n'
+            # For each file in the file tree
+            file_paths = file_tree['files']
+            for file_path in file_paths:
 
-                # ignore @import lines, it's all getting smooshed together anyway
-                # separate scss vars
-                for line in scss_file.readlines():
-                    if '@import' in line:
-                        continue
-                    elif line[0] == "$":
-                        scss_vars += line
-                    else:
-                        raw_scss += line + '\n'
+                # if the file's extension is .scss
+                if get_extension(file_path) == 'scss':
 
-    # add scss vars at the very top of all scss
-    # this is a workaround for lack of support for @import
-    # in Libsass (or my own inability to figure it out)
-    raw_scss = scss_vars + raw_scss
+                    # open the file and add its contents to raw_scss variable
+                    with open(file_path, 'r') as scss_file:
+                        raw_scss += '\n'
 
-    return raw_scss
+                        # ignore @import lines, it's all getting smooshed together anyway
+                        # separate scss vars
+                        for line in scss_file.readlines():
+                            if '@import' in line:
+                                continue
+                            elif line[0] == "$":
+                                scss_vars += line
+                            else:
+                                raw_scss += line + '\n'
+
+            # add scss vars at the very top of all scss
+            # this is a workaround for lack of support for @import
+            # in Libsass (or my own inability to figure it out)
+            raw_scss = scss_vars + raw_scss
+
+            return raw_scss
 
 
-
-def write_css(compiled_css, css_dir, css_filename):
+def write_css(raw_scss, options):
     '''
         Creates a new css file in the target CSS directory if it doesn't exist,
             then overwrites all contents with the compiled CSS.
     '''
-    new_file_path = css_dir + css_filename
+
+    compiled_css = sass.compile(
+        string=raw_scss, 
+        output_style=f"{options['output_style']}"
+    )
+
+    new_file_path = options['css_dir'] + options['css_filename']
 
     # open the target css file, otherwise create it
     with open(new_file_path, 'a+') as css_file:
