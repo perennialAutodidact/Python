@@ -46,7 +46,7 @@ def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
     # if the --config flag is True, pass the default options
     # to set_config_file to edit or create the config file
     if config:
-        options = set_config_file(defaults)    
+        options = set_config_file(defaults)
 
     print(f"{options = }")
     scss_dir = options['scss_dir']
@@ -57,4 +57,5 @@ def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
         write_css(raw_scss, options)
     else:
         click.echo("No SCSS found")
+        set_config_file(options)
 

@@ -86,11 +86,11 @@ def get_raw_scss(file_tree, scss_dir):
     '''
     root = format_directory_name(scss_dir)
 
+    raw_scss = ''
     if valid_path(scss_dir):
         file_tree = get_include_paths(scss_dir)
 
         if dir_contains_extension(scss_dir, '.scss'):
-            raw_scss = ''
             scss_vars = ''
 
             # For each file in the file tree
@@ -119,7 +119,7 @@ def get_raw_scss(file_tree, scss_dir):
             # in Libsass (or my own inability to figure it out)
             raw_scss = scss_vars + raw_scss
 
-            return raw_scss
+    return raw_scss
 
 
 def write_css(raw_scss, options):
