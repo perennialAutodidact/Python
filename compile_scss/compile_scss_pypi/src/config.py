@@ -3,7 +3,7 @@ from src.utilities import valid_path, format_directory_name
 import re
 import json
 
-def set_config_file(options, config_loaded = False):
+def set_config_file(options, config_file = '', message = ''):
     '''
     Read, Evaluate, Print, Loop allowing the user to set 
     new option values and generating a JSON config file or 
@@ -16,13 +16,16 @@ def set_config_file(options, config_loaded = False):
         '3': 'Exit',
     }
 
-    msg = " Configure Compile SCSS "
-    click.echo("-"*len(msg))
-    click.echo(msg)
-    click.echo("-"*len(msg)+"\n")
+    splash_msg = " Configure Compile SCSS "
+    display_message(splash_msg)
 
-    if not config_loaded:
+    if message != '':
+        click.echo()
+
+    if config_file == '':
         click.echo(f"No configuration file was found in the current root directory: {options['root']}\n")
+    else:
+        click.echo(f"Configuration file loaded: {config_file}")
 
     if options != {}:
         click.echo("Your current configuration:")
@@ -47,7 +50,7 @@ def set_config_file(options, config_loaded = False):
         elif choice == "2":
             break
         elif choice == "3":
-            click.echo("Goodbye!")
+            click.echo("\nGoodbye!\n")
             exit()
 
     write_config(options)
@@ -60,7 +63,7 @@ def prompt_for_options(options):
     REPL that prompts user for a value for each option,
     if they choose to override the default options.
     '''
-    
+    OUTPUT_STYLES = ['compact', 'compressed', 'expanded', 'nested']
     prompts = {
         'root': {
             'msg': "the path to your project's root directory"
@@ -75,8 +78,8 @@ def prompt_for_options(options):
             'msg': "the file name you'd like for your CSS file"
         },
         'output_style': {
-            'msg': "the output style of your CSS",
-            'options': ['compact', 'compressed', 'expanded', 'nested']
+            'msg': f"the output style of your CSS ({', '.join(['compact', 'compressed', 'expanded', 'nested'])})",
+            'options': OUTPUT_STYLES
         }
     }
 
@@ -111,7 +114,7 @@ def prompt_for_options(options):
                     if not len(regex_match) == len(user_entry) or user_entry[-1] == '-':
                         invalid_entry(user_entry, 'file name')
                         click.echo(
-                            f"For the sake of simplicity, please make your file name a single,\nlowercase word with no numbers or punctuation (except non-leading hyphens).\nThe default is '{default_filename}'and the file extension '.css' will be added automatically.\n"
+                            f"For the sake of simplicity, please make your file name a single,\nlowercase word with no numbers or punctuation (except non-leading or non-trailing hyphens).\nThe default is '{default_filename}' and the file extension '.css' will be added automatically.\n"
                         )
                         continue
                     else:
@@ -121,10 +124,10 @@ def prompt_for_options(options):
                 # if the prompt has additional options,
                 # ensure that input is on of them
                 elif 'options' in prompts[key].keys():
-                    if options[key] not in prompts[key]['options']:
+                    if user_entry not in prompts[key]['options']:
                         invalid_entry(user_entry, 'output style')
 
-                        click.echo(f"Enter one of these: {', '.join(prompts[key]['options'])}\n")
+                        continue
                     else:
                         options[key] = user_entry
                         break  # break output_style options loop
@@ -134,6 +137,9 @@ def prompt_for_options(options):
         return options
 
 def write_config(options):
+
+    print("WRITE CONFIG CALLED")
+
     new_file_path = options['root'] + 'compile_scss_config.json'
 
     # open the target config file, otherwise create it
@@ -150,7 +156,12 @@ def invalid_entry(entry, option_type):
     Display an error message in the config REPL if an invalid entry is provided by ther user.
     "Your entry: '{entry:str}' is not a valid {option_type:str}."
     '''
-    error = f"Your entry: '{entry}' is not a valid {option_type}."
-    click.echo('\n' + '!'*(len(error) + 2))
-    click.echo(f" {error} ")
-    click.echo('!'*(len(error) + 2) + '\n')
+    error_message = f"Your entry: '{entry}' is not a valid {option_type}."
+    click.echo('\n' + '!'*(len(error_message) + 2))
+    click.echo(f" {error_message} ")
+    click.echo('!'*(len(error_message) + 2) + '\n')
+
+def display_message(message):
+    click.echo("-"*len(message))
+    click.echo(message)
+    click.echo("-"*len(message)+"\n")

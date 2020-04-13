@@ -7,7 +7,7 @@ from src.config import *         # R.E.P.L for setting option values and generat
 
 @click.option('--root', default='./', 
                 help='Path to root project directory. Default is ./')
-@click.option('--scss_dir', default='./scss',
+@click.option('--scss_dir', default='./scss', type= click.Path(dir_okay=True, resolve_path=True),
                 help='Path the directory containing SCSS files and subfolders with SCSS files Default is ./scss')
 @click.option('--css_dir', default='./css', 
                 help='Path to directory to receive CSS output file. Default is ./css')
@@ -18,16 +18,21 @@ from src.config import *         # R.E.P.L for setting option values and generat
 @click.option('--config', is_flag=True,
                 help='Check current configuration or set new values for compile_scss_config.json file.')
 @click.command()
-def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
+@click.pass_context
+def compile_scss(ctx, root, scss_dir, css_dir, css_filename, output_style, config):
     '''
     Main command in Compile SCSS package.
 
     Run: 'compile_scss --help' to view all usage options.
     '''
+
+    print(f"{click.get_current_context() = }")
+
+    # Create dictionary of default option values
     defaults = {
-        'root'        : path.abspath(root),
-        'scss_dir'    : scss_dir,
-        'css_dir'     : css_dir,
+        'root'        : format_directory_name(root),
+        'scss_dir'    : format_directory_name(scss_dir),
+        'css_dir'     : format_directory_name(css_dir),
         'css_filename': css_filename,
         'output_style': output_style,
     }
@@ -35,14 +40,14 @@ def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
     # check for config file in root directory and 
     # override defaults to config dict if found,
     # otherwise, options = {}
-    options = read_config_file(root)
+    config = read_config_file(root)
 
     # if no config was found, set defaults dict to default options
-    if options == {}:
-        options = set_config_file(defaults)
+    if config == {}:
+        options = set_config_file(config)
     else:
         click.echo(f"\n*** Config file loaded: *** \n{path.join(path.abspath(root), 'compile_scss_config.json')}\n")
-
+        
     # if the --config flag is True, pass the default options
     # to set_config_file to edit or create the config file
     if config:
@@ -56,6 +61,5 @@ def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
     if raw_scss != '':
         write_css(raw_scss, options)
     else:
-        click.echo("No SCSS found")
-        set_config_file(options)
-
+        message = f"No SCSS found in SCSS directory: {scss_dir}"
+        set_config_file(options, message)

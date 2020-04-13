@@ -6,10 +6,12 @@ from shutil import copyfile
 
 def format_directory_name(directory):
     '''
-    This just adds a forward slash '/' to the end of a 
-        directory if it isn't included by the user to
-        prevent file opening/creation errors.
+    Expands directory paths with ./, ../, or ~/ and 
+    adds a '/' to the end them if it isn't included by the 
+    user to prevent file opening/creation errors.
     '''
+
+    directory = path.abspath(path.expanduser(directory))
 
     if directory[-1] != '/':
             directory += '/'
