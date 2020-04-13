@@ -11,7 +11,7 @@ def set_config_file(options, config_file = '', message = ''):
     '''
 
     menu_options = {
-        '1': 'Change configuration file',
+        '1': 'Change or create configuration file',
         '2': 'Use current configuration',
         '3': 'Exit',
     }

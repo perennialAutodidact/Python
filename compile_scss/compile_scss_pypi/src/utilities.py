@@ -23,6 +23,7 @@ def valid_path(file_path):
     If given file path exists, return True, 
         otherwise return False
     '''
+    file_path = format_directory_name(file_path)
     if(path.exists(file_path)):
         return file_path
     else:
