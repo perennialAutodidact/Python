@@ -41,7 +41,7 @@ def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
 
     # if no config was found, set defaults dict to default options
     if config == {}:
-        options = set_config_file(defaults, config_file = '')
+        options = set_config_file(config, config_file = '')
     else:
         options = set_config_file(config, config_file = path.join(root, 'compile_scss_config.json'))
         
