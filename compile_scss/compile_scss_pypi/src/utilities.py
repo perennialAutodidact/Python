@@ -159,6 +159,9 @@ def read_config_file(root):
         returns a blank dictionary if no config file exists.
     '''
     file_list = listdir(root)
+
+    # print(f"CONFIG IN ROOT? {listdir(root)}")
+
     config_file = 'compile_scss_config.json'
 
     options = {}

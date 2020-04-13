@@ -18,15 +18,12 @@ from src.config import *         # R.E.P.L for setting option values and generat
 @click.option('--config', is_flag=True,
                 help='Check current configuration or set new values for compile_scss_config.json file.')
 @click.command()
-@click.pass_context
-def compile_scss(ctx, root, scss_dir, css_dir, css_filename, output_style, config):
+def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
     '''
     Main command in Compile SCSS package.
 
     Run: 'compile_scss --help' to view all usage options.
     '''
-
-    print(f"{click.get_current_context() = }")
 
     # Create dictionary of default option values
     defaults = {
@@ -44,9 +41,10 @@ def compile_scss(ctx, root, scss_dir, css_dir, css_filename, output_style, confi
 
     # if no config was found, set defaults dict to default options
     if config == {}:
-        options = set_config_file(config)
+        options = set_config_file(defaults, config_file = '')
     else:
-        click.echo(f"\n*** Config file loaded: *** \n{path.join(path.abspath(root), 'compile_scss_config.json')}\n")
+        options = set_config_file(config, config_file = path.join(root, 'compile_scss_config.json'))
+        
         
     # if the --config flag is True, pass the default options
     # to set_config_file to edit or create the config file
