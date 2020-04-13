@@ -9,29 +9,32 @@ def set_config_file(options, config_file = '', message = ''):
     new option values and generating a JSON config file or 
     to return the default values set within compile_scss
     '''
+    print(f"options: {options}")
+    print(f"{config_file = },\n{message = }")
 
     menu_options = {
-        '1': 'Change or create configuration file',
+        '1': 'Create or edit configuration file',
         '2': 'Use current configuration',
         '3': 'Exit',
     }
 
-    splash_msg = " Configure Compile SCSS "
+    splash_msg = "Configure Compile SCSS"
     display_message(splash_msg)
 
     if message != '':
-        click.echo()
+        click.echo(f"*** {message} ***")
 
     if config_file == '':
-        click.echo(f"No configuration file was found in the current root directory: {options['root']}\n")
+        click.echo(f"No configuration file was found in the current root directory:\n\n\t{options['root']}\n\nDefault values will be used until a configuration file is created.\n")
     else:
-        click.echo(f"Configuration file loaded: {config_file}")
+        click.echo(f"Configuration file loaded: {config_file}\n")
 
     if options != {}:
-        click.echo("Your current configuration:")
+        click.echo("\tYour current configuration:")
+        click.echo(f"\t{'-' * 30}")
         for key in options.keys():
-            click.echo(f"-{key}: {options[key]}")
-        
+            click.echo(f"\t- {key}: {options[key]}")
+
     while True:
         click.echo("\nPlease choose from the following options: \n")
     
@@ -48,14 +51,16 @@ def set_config_file(options, config_file = '', message = ''):
             options = prompt_for_options(options)
             break
         elif choice == "2":
+
             break
         elif choice == "3":
             click.echo("\nGoodbye!\n")
             exit()
 
-    write_config(options)
-    
+    # print(f"after REPL {options = }")
+
     return options
+
 
 
 def prompt_for_options(options):
@@ -137,9 +142,6 @@ def prompt_for_options(options):
         return options
 
 def write_config(options):
-
-    print("WRITE CONFIG CALLED")
-
     new_file_path = options['root'] + 'compile_scss_config.json'
 
     # open the target config file, otherwise create it
@@ -156,12 +158,18 @@ def invalid_entry(entry, option_type):
     Display an error message in the config REPL if an invalid entry is provided by ther user.
     "Your entry: '{entry:str}' is not a valid {option_type:str}."
     '''
-    error_message = f"Your entry: '{entry}' is not a valid {option_type}."
-    click.echo('\n' + '!'*(len(error_message) + 2))
+    error_message = f"\nYour entry: '{entry}' is not a valid {option_type}.\n"
+    divider_top = f"\n{'!'*(len(error_message) + 2)}"
+    divider_bottom = f"{'!'*(len(error_message) + 2)}\n"
+    
+    click.echo(divider_top)
     click.echo(f" {error_message} ")
-    click.echo('!'*(len(error_message) + 2) + '\n')
+    if option_type == 'directory':
+        click.echo(f"Either the directory does not exist yet".center(len(divider_top)-1, ' '))
+        click.echo(f"or its path is not valid".center(len(divider_bottom)-1, ' '))
+    click.echo(divider_bottom)
 
 def display_message(message):
-    click.echo("-"*len(message))
-    click.echo(message)
-    click.echo("-"*len(message)+"\n")
+    click.echo("--" * len(message))
+    click.echo(message.center(len(message) * 2, ' '))
+    click.echo("--" * len(message)+ "\n ")

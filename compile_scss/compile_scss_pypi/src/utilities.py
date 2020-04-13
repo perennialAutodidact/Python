@@ -1,6 +1,6 @@
 import json
 import sass
-from os import path, listdir, remove, walk, getcwd
+from os import path, listdir, remove, walk, getcwd, access, R_OK
 from shutil import copyfile
 
 
@@ -20,11 +20,13 @@ def format_directory_name(directory):
 
 def valid_path(file_path):
     '''
-    If given file path exists, return True, 
+    If given file path can be read from, return True, 
         otherwise return False
     '''
     file_path = format_directory_name(file_path)
-    if(path.exists(file_path)):
+
+    # if file path has read access
+    if(access(file_path, R_OK)):
         return file_path
     else:
         return False
