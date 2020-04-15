@@ -46,13 +46,14 @@ def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
         options = set_config_file(defaults, config_file_path = '')
     else:
         options = defaults
+        config_is_valid(options)
+
         options = set_config_file(options, config_file_path = config_file_path)
 
     # if the --config flag is True, pass the default options
     # to set_config_file to edit or create the config file
     if config:
         options = set_config_file(defaults)
-
 
     # create or replace config_file
     # write_config(options)

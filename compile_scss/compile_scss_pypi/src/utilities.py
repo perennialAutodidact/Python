@@ -172,14 +172,29 @@ def read_config_file(root):
         try:    
             with open(full_path, 'r') as config:
                 options = json.load(config)
-            return options
+
+                if isinstance(options, dict):
+                    return options 
+                else:
+                    raise TypeError("\nYour configuration file does not contain a valid JSON object.")
+                    return {}
+
         except json.JSONDecodeError:
             click.echo("\nThere was a problem loading the JSON in your configuration file.\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--config' flag to generate a new configuration file.")
             return {}
+
+        except TypeError as error:
+            click.echo(error)
+            return {}
+
         except PermissionError:
             click.echo("\nYou don't have permission to access the given root directory or configuration file.")
+            return {}
     else:
         return {}
 
-# def is_valid_config(options):
-#     print(options)
+def config_is_valid(options):
+    pass
+    
+    # required_keys = ['root', 'scss_dir', 'css_dir', 'css_filename', 'output_style']
+    
