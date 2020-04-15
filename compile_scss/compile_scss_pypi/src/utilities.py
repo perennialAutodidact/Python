@@ -1,7 +1,9 @@
 import json
 import sass
+import click
 from os import path, listdir, remove, walk, getcwd, access, R_OK
 from shutil import copyfile
+
 
 
 def format_directory_name(directory):
@@ -25,11 +27,8 @@ def valid_path(file_path):
     '''
     file_path = format_directory_name(file_path)
 
-    # if file path has read access
-    if(access(file_path, R_OK)):
-        return file_path
-    else:
-        return False
+    # if file path exists and has read access, return true, else false
+    return access(file_path, R_OK)
 
 def dir_contains_extension(directory, extension):
     '''
@@ -133,8 +132,6 @@ def write_css(raw_scss, options):
             then overwrites all contents with the compiled CSS.
     '''
 
-    print(f"{raw_scss = }")
-
     if raw_scss != '':
         compiled_css = sass.compile(
             string=raw_scss, 
@@ -163,19 +160,26 @@ def read_config_file(root):
     '''
     file_list = listdir(root)
 
-    # print(f"CONFIG IN ROOT? {listdir(root)}")
-
     config_file = 'compile_scss_config.json'
 
-    options = {}
     # if config_file is in the list of files
     if config_file in file_list:
 
         full_path = path.join(root, config_file)
 
-        # open the file, read the contents and parse
-        # json object into a dictionary
-        with open(full_path, 'r') as config:
-            options = json.load(config)
-    return options
+            # open the file, read the contents and parse
+            # json object into a dictionary
+        try:    
+            with open(full_path, 'r') as config:
+                options = json.load(config)
+            return options
+        except json.JSONDecodeError:
+            click.echo("\nThere was a problem loading the JSON in your configuration file.\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--config' flag to generate a new configuration file.")
+            return {}
+        except PermissionError:
+            click.echo("\nYou don't have permission to access the given root directory or configuration file.")
+    else:
+        return {}
 
+# def is_valid_config(options):
+#     print(options)

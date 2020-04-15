@@ -7,7 +7,7 @@ from src.config import *         # R.E.P.L for setting option values and generat
 
 @click.option('--root', default='./', 
                 help='Path to root project directory. Default is ./')
-@click.option('--scss_dir', default='./scss', type= click.Path(dir_okay=True, resolve_path=True),
+@click.option('--scss_dir', default='./scss',
                 help='Path the directory containing SCSS files and subfolders with SCSS files Default is ./scss')
 @click.option('--css_dir', default='./css', 
                 help='Path to directory to receive CSS output file. Default is ./css')
@@ -25,56 +25,50 @@ def compile_scss(root, scss_dir, css_dir, css_filename, output_style, config):
     Run: 'compile_scss --help' to view all usage options.
     '''
 
-    # Create dictionary of default option values
-    defaults = {
-        'root'        : format_directory_name(root),
-        'scss_dir'    : format_directory_name(scss_dir),
-        'css_dir'     : format_directory_name(css_dir),
-        'css_filename': css_filename,
-        'output_style': output_style,
-    }
+    # # Create dictionary of default option values
+    # defaults = {
+    #     'root'        : format_directory_name(root),
+    #     'scss_dir'    : format_directory_name(scss_dir),
+    #     'css_dir'     : format_directory_name(css_dir),
+    #     'css_filename': css_filename,
+    #     'output_style': output_style,
+    # }
 
-    while True:
 
-        print("BEGIN COMPILE LOOP")
+    # check for config file in root directory and 
+    # override defaults to options dict if found,
+    # otherwise, options = {}
+    defaults = read_config_file(root)
+    config_file_path = path.join(format_directory_name(root), 'compile_scss_config.json')
 
-        # check for config file in root directory and 
-        # override defaults to config dict if found,
-        # otherwise, options = {}
-        options = read_config_file(root)
+    # if no config was found, set defaults dict to default options
+    if defaults == {}:
+        options = set_config_file(defaults, config_file_path = '')
+    else:
+        options = defaults
+        options = set_config_file(options, config_file_path = config_file_path)
 
-        # if no config was found, set defaults dict to default options
-        if options == {}:
-            print("CALLED WITH NO CONFIG FILE")
-            options = set_config_file(defaults, config_file = '')
-            print(f'\nOPTIONS WITH NO CONFIG FILE: {options}')
-        else:
-            print("CALLED WITH CONFIG FILE")
-            options = set_config_file(options, config_file = path.join(root, 'compile_scss_config.json'))
-            print(f'\nOPTIONS WITH CONFIG FILE: {options}')
-            
+    # if the --config flag is True, pass the default options
+    # to set_config_file to edit or create the config file
+    if config:
+        options = set_config_file(defaults)
 
-        # if the --config flag is True, pass the default options
-        # to set_config_file to edit or create the config file
-        if config:
-            options = set_config_file(defaults)
 
-        # create or replace config_file
-        write_config(options)
+    # create or replace config_file
+    # write_config(options)
 
-        scss_dir = options['scss_dir']
+    # scss_dir = options['scss_dir']
+    # if not valid_path(scss_dir):
+    #     message = f"*** Invalid SCSS folder ***\n{scss_dir}"
+    #     set_config_file(options, config_file = path.join(root, 'compile_scss_config.json'), message = message)
+    
+    # file_tree = get_include_paths(scss_dir)
+    # raw_scss = get_raw_scss(file_tree, scss_dir)
+    
+    # if raw_scss != '':
+    #     write_css(raw_scss, options)
+    # elif raw_scss == '':
+    #     message = f"*** No SCSS found in SCSS directory: {scss_dir}"
+    #     set_config_file(options, config_file = path.join(root, 'compile_scss_config.json'), message=message)
 
-        file_tree = get_include_paths(scss_dir)
-        raw_scss = get_raw_scss(file_tree, scss_dir)
-        
-        print(f"RAW SCSS: {raw_scss}")
 
-        if raw_scss != '':
-            write_css(raw_scss, options)
-            break
-        else:
-            click.echo(f"\n*** No SCSS found in SCSS directory: ***\n")
-            click.echo(f"\t{scss_dir}".center(40, ' '))
-            continue
-
-    print("LOOP ENDED")
