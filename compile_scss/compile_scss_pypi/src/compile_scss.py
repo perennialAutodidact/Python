@@ -48,7 +48,7 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
             config = set_config_file(config, config_file_path = config_file_path)
         
 
-    # if the --config flag is True, pass the default options
+    # if the --set_config flag is True, pass the default options
     # to set_config_file to edit or create the config file
     if set_config:
         options = set_config_file(config)

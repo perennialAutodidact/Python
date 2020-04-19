@@ -181,28 +181,28 @@ def read_config_file(root):
     '''
     file_list = listdir(root)
 
-    config_file = 'compile_scss_config.json'
+    config_filename = 'compile_scss_config.json'
 
     # if config_file is in the list of files
-    if config_file in file_list:
+    if config_filename in file_list:
 
-        full_path = path.join(root, config_file)
+        full_path = path.join(root, config_filename)
 
             # open the file, read the contents and parse
             # json object into a dictionary
         try:    
-            with open(full_path, 'r') as config:
-                options = json.load(config)
+            with open(full_path, 'r') as config_file:
+                config = json.load(config_file)
 
-                if isinstance(options, dict):
-                    return options 
+                if isinstance(config, dict):
+                    return config 
                 else:
                     raise TypeError("\nYour configuration file does not contain a valid JSON object.")
 
         # If errors are raised, return an empty dictionary
         except json.JSONDecodeError as error:
             click.echo(error)
-            click.echo("\nThere was a problem loading the JSON in your configuration file.\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--config' flag to generate a new configuration file.")
+            click.echo("\nThere was a problem loading the JSON in your configuration file.\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--set_config' flag to generate a new configuration file.")
             return {}
 
         except TypeError as error:
@@ -244,7 +244,7 @@ def valid_filename(filename, extension):
     
     return True
 
-def has_required_keys(options, required_keys):
+def has_required_keys(config, required_keys):
     '''
     Return True if options dict contains all the keys
     in the keys list. If any keys are missing, 
@@ -253,33 +253,33 @@ def has_required_keys(options, required_keys):
     try:
         missing_keys = []
         for key in required_keys:
-            if key not in options.keys():
+            if key not in config.keys():
                 missing_keys.append(key)
         if len(missing_keys) > 0:
             missing_keys = '\n'.join(missing_keys)
             raise KeyError
 
     except KeyError:
-        click.echo(f"\nThe following keys are missing from your configuration file:\n\n{missing_keys}\n\nPlease change your configuration file to include those keys or run Compile SCSS with the '--config' flag to create a new configuration file.")
+        click.echo(f"\nThe following keys are missing from your configuration file:\n\n{missing_keys}\n\nPlease change your configuration file to include those keys or run Compile SCSS with the '--set_config' flag to create a new configuration file.")
         return False
     
     return True
 
-def config_is_valid(options):
+def config_is_valid(config):
     '''
     Validate each option in the configuration file for Compile SCSS. 
     Raises errors if directory paths do not exist, CSS filename is not valid,
     or the output style is not one of the available options.
     '''
     required_keys  = ['root', 'scss_dir', 'css_dir', 'css_filename', 'output_style']
-    output_style = options['output_style']
+    output_style = config['output_style']
     
     validations = {
-        'config_keys' : has_required_keys(options, required_keys),
-        'root_dir'    : valid_path(options['root'], 'project root'),
-        'scss_dir'    : valid_path(options['scss_dir'], 'SCSS'),
-        'css_dir'     : valid_path(options['css_dir'], 'CSS'),
-        'css_filename': valid_filename(options['css_filename'], 'css'),
+        'config_keys' : has_required_keys(config, required_keys),
+        'root_dir'    : valid_path(config['root'], 'project root'),
+        'scss_dir'    : valid_path(config['scss_dir'], 'SCSS'),
+        'css_dir'     : valid_path(config['css_dir'], 'CSS'),
+        'css_filename': valid_filename(config['css_filename'], 'css'),
         'output_style': True if output_style in VALID_OUTPUT_STYLES else False,
     }
     
@@ -288,12 +288,12 @@ def config_is_valid(options):
             raise ValueError
     except ValueError as error:
         click.echo('\nPlease check your configuration file or use the')
-        click.echo('--config flag to create a new one.')
+        click.echo('--set_config flag to create a new one.')
 
         return False
     
-    options['root']     = format_directory_name(options['root'])
-    options['scss_dir'] = format_directory_name(options['scss_dir'])
-    options['css_dir']  = format_directory_name(options['css_dir'])
+    config['root']     = format_directory_name(config['root'])
+    config['scss_dir'] = format_directory_name(config['scss_dir'])
+    config['css_dir']  = format_directory_name(config['css_dir'])
 
-    return options
+    return config
