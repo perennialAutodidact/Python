@@ -1,6 +1,7 @@
 import json
 import sass
 import click
+import re
 from os import path, listdir, remove, walk, getcwd, access, R_OK
 from shutil import copyfile
 
@@ -29,6 +30,7 @@ def valid_path(file_path):
 
     # if file path exists and has read access, return true, else false
     return access(file_path, R_OK)
+
 
 def dir_contains_extension(directory, extension):
     '''
@@ -177,9 +179,10 @@ def read_config_file(root):
                     return options 
                 else:
                     raise TypeError("\nYour configuration file does not contain a valid JSON object.")
-                    return {}
 
-        except json.JSONDecodeError:
+        # If errors are raised, return an empty dictionary
+        except json.JSONDecodeError as error:
+            click.echo(error)
             click.echo("\nThere was a problem loading the JSON in your configuration file.\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--config' flag to generate a new configuration file.")
             return {}
 
@@ -190,11 +193,72 @@ def read_config_file(root):
         except PermissionError:
             click.echo("\nYou don't have permission to access the given root directory or configuration file.")
             return {}
-    else:
-        return {}
+
+    # if no configuration file is found, return an empty dictionary
+    return {}
+
+
+def valid_css_file_name(file_name):
+    '''
+    Check a file name to ensure it matches a valid pattern.
+    
+    The CSS file name cannot contain special characters other than non-leading/trailing
+    hyphens/underscores. The file extension must be lowercase.
+
+    Examples:
+    Valid : index.css, i-n-d-e-x.css, main.css, home_page.css, iNdEx.css, page1.css
+    Invalid: -index-.css, index.CSS, _index.css, 
+    '''
+    css_filename_regex = r'[^\W\_][-\w]*[^\W\_]\.css'
+
+    regex_match = re.match(css_filename_regex, file_name)
+
+    if regex_match != None and len(regex_match.group()) == len(file_name):
+        return True
+    
+    return False
+
 
 def config_is_valid(options):
-    pass
+    '''
+    Validate each option in the configuration file for Compile SCSS. 
+    Raises errors if directory paths do not exist, CSS filename is not valid,
+    or the output style is not one of the available options.
+    '''
+    required_keys = ['root', 'scss_dir', 'css_dir', 'css_filename', 'output_style']
     
-    # required_keys = ['root', 'scss_dir', 'css_dir', 'css_filename', 'output_style']
-    
+    # check config file for all required keys
+    # add all missing keys to a list
+    # if any keys are missing, raise a KeyError
+    # and return False
+    try:
+        missing_keys = []
+        for key in required_keys:
+            if key not in options.keys():
+                missing_keys.append(key)
+        if len(missing_keys) > 0:
+            missing_keys = '\n'.join(missing_keys)
+            raise KeyError
+
+    except KeyError:
+        click.echo(f"\nThe following keys are missing from your configuration file:\n\n{missing_keys}\n\nPlease change your configuration file to include those keys or run Compile SCSS with the '--config' flag to create a new configuration file.")
+        return False
+
+    # check the validity of all the directory paths in the config
+    # if invalid, raise a FileNotFoundError
+    try:
+        if not valid_path(options['root']):
+            raise FileNotFoundError(f"\nInvalid directory given for the root directory: {options['root']}")
+            
+        elif not valid_path(options['scss_dir']):
+            raise FileNotFoundError(f"\nInvalid directory given for the SCSS directory: {options['scss_dir']}")
+        
+        elif not valid_path(options['css_dir']):
+            raise FileNotFoundError(f"\nInvalid directory given for the CSS directory: {options['css_dir']}")
+
+    except FileNotFoundError as error:
+        click.echo(error)
+        return False
+
+
+
