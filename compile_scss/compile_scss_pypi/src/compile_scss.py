@@ -37,24 +37,21 @@ def compile_scss(root, config): #(root, scss_dir, css_dir, css_filename, output_
     # check for config file in root directory and 
     # override defaults to options dict if found,
     # otherwise, options = {}
-    defaults = read_config_file(root)
+    config = read_config_file(root)
     config_file_path = path.join(format_directory_name(root), 'compile_scss_config.json')
 
     # if no config was found, set defaults dict to default options
-    if defaults == {}:
-        options = set_config_file(defaults, config_file_path = '')
+    if config == {}:
+        options = set_config_file(config, config_file_path = '')
     else:
-        options = defaults
-        if config_is_valid(options) == True:
-            options = set_config_file(options, config_file_path = config_file_path)
-        else:
-            click.echo('Check your configuration file and try again')
-            click.echo('or use the --config flag to create a new one.')
+        if config_is_valid(config):
+            config = set_config_file(config, config_file_path = config_file_path)
+        
 
     # if the --config flag is True, pass the default options
     # to set_config_file to edit or create the config file
     if config:
-        options = set_config_file(defaults)
+        options = set_config_file(config)
 
     # create or replace config_file
     # write_config(options)
