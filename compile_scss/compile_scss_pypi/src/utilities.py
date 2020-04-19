@@ -30,7 +30,7 @@ def format_directory_name(directory):
     return directory
 
 
-def valid_path(file_path, file_label=''):
+def valid_path(file_path):
     '''
     If given file path can be read from, return True, 
         otherwise, raise an error and return False
@@ -43,9 +43,6 @@ def valid_path(file_path, file_label=''):
 
     except FileNotFoundError as error:
         click.echo(error)
-        if file_label:
-            click.echo(f"Please enter a valid {file_label} path in your 'compile_scss_config.json' file and try again.")
-            pass
         return False
 
     return True
@@ -202,7 +199,7 @@ def read_config_file(root):
         # If errors are raised, return an empty dictionary
         except json.JSONDecodeError as error:
             click.echo(error)
-            click.echo("\nThere was a problem loading the JSON in your configuration file.\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--set_config' flag to generate a new configuration file.")
+            click.echo("\nThere was a problem loading the JSON in your configuration file.\n\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--set_config' flag to generate a new configuration file.")
             return {}
 
         except TypeError as error:
@@ -236,7 +233,7 @@ def valid_filename(filename, extension):
 
     try:
         if regex_match == None:
-            raise ValueError (f'Invalid CSS filename: {filename}')
+            raise ValueError (f'\nInvalid CSS filename: {filename}')
     
     except ValueError as error:
         click.echo(error)
@@ -259,12 +256,26 @@ def has_required_keys(config, required_keys):
             missing_keys = '\n'.join(missing_keys)
             raise KeyError
 
-    except KeyError:
-        click.echo(f"\nThe following keys are missing from your configuration file:\n\n{missing_keys}\n\nPlease change your configuration file to include those keys or run Compile SCSS with the '--set_config' flag to create a new configuration file.")
+    except KeyError as error:
+        click.echo(f"\nThe following keys are missing from your configuration file:\n\n{missing_keys}")
         return False
     
     return True
 
+def valid_output_style(config):
+    '''
+    Return True if output_style is valid.
+    Otherwise, return False
+    '''
+    try:
+        output_style = config['output_style']
+        if not output_style in VALID_OUTPUT_STYLES:
+            raise LookupError(f'\nInvalid output style: {output_style}')
+    except LookupError as error:
+        print(error)
+        return False
+    
+    return True
 def config_is_valid(config):
     '''
     Validate each option in the configuration file for Compile SCSS. 
@@ -272,15 +283,14 @@ def config_is_valid(config):
     or the output style is not one of the available options.
     '''
     required_keys  = ['root', 'scss_dir', 'css_dir', 'css_filename', 'output_style']
-    output_style = config['output_style']
     
     validations = {
         'config_keys' : has_required_keys(config, required_keys),
-        'root_dir'    : valid_path(config['root'], 'project root'),
-        'scss_dir'    : valid_path(config['scss_dir'], 'SCSS'),
-        'css_dir'     : valid_path(config['css_dir'], 'CSS'),
+        'root_dir'    : valid_path(config['root']),
+        'scss_dir'    : valid_path(config['scss_dir']),
+        'css_dir'     : valid_path(config['css_dir']),
         'css_filename': valid_filename(config['css_filename'], 'css'),
-        'output_style': True if output_style in VALID_OUTPUT_STYLES else False,
+        'output_style': valid_output_style(config)
     }
     
     try:
