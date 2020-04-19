@@ -15,16 +15,20 @@ VALID_OUTPUT_STYLES = [
 def format_directory_name(directory):
     '''
     Expands directory paths with ./, ../, or ~/ and 
-    adds a '/' to the end them if it isn't included by the 
-    user to prevent file opening/creation errors.
+    adds a forward or backward slash to the end them 
+    if it isn't included by the user to prevent file 
+    opening/creation errors.
     '''
 
     directory = path.abspath(path.expanduser(directory))
 
-    if directory[-1] != '/':
-            directory += '/'
+    slash = '/' if '/' in directory else '\\'
+    
+    if directory[-1] != slash:
+        directory += slash
 
     return directory
+
 
 def valid_path(file_path, file_label=''):
     '''
@@ -281,9 +285,15 @@ def config_is_valid(options):
     
     try:
         if not all(validations.values()):
-            raise ValueError(f'Invalid configuration.')
+            raise ValueError
     except ValueError as error:
-        click.echo(error)
+        click.echo('\nPlease check your configuration file or use the')
+        click.echo('--config flag to create a new one.')
+
         return False
     
+    options['root']     = format_directory_name(options['root'])
+    options['scss_dir'] = format_directory_name(options['scss_dir'])
+    options['css_dir']  = format_directory_name(options['css_dir'])
+
     return options

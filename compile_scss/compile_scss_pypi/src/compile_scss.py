@@ -15,10 +15,10 @@ from src.config import *         # R.E.P.L for setting option values and generat
 #                 help='Format of generated CSS. Options: expanded, nested, compact, compressed')
 @click.option('--root', default='./', 
                 help='Path to root project directory. Default is ./')
-@click.option('--config', is_flag=True,
+@click.option('--set-config', is_flag=True,
                 help='Check current configuration or set new values for compile_scss_config.json file.')
 @click.command()
-def compile_scss(root, config): #(root, scss_dir, css_dir, css_filename, output_style, config):
+def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, output_style, config):
     '''
     Main command in Compile SCSS package.
 
@@ -42,7 +42,7 @@ def compile_scss(root, config): #(root, scss_dir, css_dir, css_filename, output_
 
     # if no config was found, set defaults dict to default options
     if config == {}:
-        options = set_config_file(config, config_file_path = '')
+        config = set_config_file(config, config_file_path = '')
     else:
         if config_is_valid(config):
             config = set_config_file(config, config_file_path = config_file_path)
@@ -50,7 +50,7 @@ def compile_scss(root, config): #(root, scss_dir, css_dir, css_filename, output_
 
     # if the --config flag is True, pass the default options
     # to set_config_file to edit or create the config file
-    if config:
+    if set_config:
         options = set_config_file(config)
 
     # create or replace config_file
