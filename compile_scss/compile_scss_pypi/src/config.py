@@ -26,7 +26,7 @@ def display_message(message, divider, width, no_top = False):
     click.echo(f"{divider * width}")
 
 
-def set_config_file(config):
+def set_config_file(config, config_file = ''):
     '''
     Read, Evaluate, Print, Loop allowing the user to set 
     new option values and generating a JSON config file or 

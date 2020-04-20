@@ -40,16 +40,18 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
         if set_config:
             config = set_config_file(config)
         else:
-            error_quit(f"\nNavigate to your projects root directory and check for a configuration file named 'compile_scss_config.json'")
+            error_quit(f"\nNavigate to your project's root directory and check for a configuration file named 'compile_scss_config.json'")
     
     elif config != {}:
         if not config_is_valid(config):
             error_quit("\nPlease check the configuration file in your project's root directory.")
 
-        click.echo(f"\nConfig file successfully loaded:\n{config['config_file']}")
+        config_file = path.join(config['root'], 'compile_scss_config.json')
+        click.echo(f"\nConfig file successfully loaded:\n{config_file}")
 
         if set_config:
-            config = set_config_file(config)
+            config = set_config_file(config, config_file = config_file)
+    
     # create or replace config_file
     # write_config(options)
 
