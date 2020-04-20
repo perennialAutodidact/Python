@@ -1,0 +1,6 @@
+{
+    "scss_dir"    : "a/scss",
+    "css_dir"     : "a/css",
+    "css_filename": "index.cs",
+    "output_style": "expasnded"
+}

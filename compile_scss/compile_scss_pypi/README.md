@@ -1,15 +1,14 @@
 # Compile SCSS
 
-v0.5.0
+## v0.7.0
 
 A CLI utility for compiling multiple SCSS files into a single CSS file to avoid linking a million CSS files within a project. Compile SCSS utilizes Click to construct its CLI interface.
 
 ## To Do
 
-* setup watchdog to start observing user's root SCSS directory if user enters a --watch flag
+* setup watchdog to start observing user's root SCSS directory with **--watch** flag
 * print updated file paths to terminal on changes. Clear after a second or two
   * <https://www.quora.com/How-can-I-delete-the-last-printed-line-in-Python-language>
-* config function that prompts user for input for each option and generates a config.json file in their root scss directory
 * Redo README
 * Write some tests
 * Publish to PyPi
@@ -20,11 +19,25 @@ This doesn't work yet, but will soon:
 
 `pip install compile_scss`
 
+---
+
 ## Usage
 
 Run `compile_scss`
 
-By default, a CSS file named `index.css` will be generated in the same directory as the SCSS files.
+If `compile_scss` is run without any options or flags, Compile SCSS will look in the project's root directory for a file named `compile_scss_config.json`, which stores a JSON object with user's predefined option values.
+
+If a configuration file is found, the default option values will be overridden and Compile SCSS will run using the user's chosen values. If no configuration file is found, a Read, Evaluate, Print, Loop (R.E.P.L.) will be triggered and the user will have the option to either set new option values or continue compiling using Compile SCSS's default options, listed below.
+
+If the user runs:
+
+`compile_scss --config`
+
+The configuration R.E.P.L. will be triggered by default, but other options passed with it will still override default option values and be retained in the R.E.P.L.
+
+`compile_scss --config --root . --scss_dir ../example/scss/ --css_dir ../example/css/ --css_filename main.css --output_style compressed`
+
+---
 
 **Compile Sass** is still in development but has been tested successfully but not extensively with:
 
@@ -39,13 +52,15 @@ Currently `compile_scss.py` can be passed a variety of command line arguments to
 
 * `--help` - Display help information on usage and options
 
-* `--root` - Root directory of SCSS file tree. This directory and its subdirectories will be traversed in search of all files with the `.scss` file extension.
+* `--root` - Root directory of the project. Default is `./`
 
-* `--css_dir` - Target directory for the generated CSS file. Default is `./` which is the same directory as the SCSS files.
+* `--scss_dir` - Directory of SCSS file tree. This directory and its subdirectories will be traversed in search of all files with the `.scss` file extension. Default is `./scss`
+
+* `--css_dir` - Target directory for the generated CSS file. Default is `./css`
 
 * `--css_name` - Name of the generated CSS file. Default is `index.css`
 
-* `--output_style` - Libsass' Sass.compile() function accepts an argument called `output_style`. This changes the formatting of the generated CSS. The following values are valid:
+* `--output_style` - Libsass' Sass.compile() method accepts an argument called `output_style`. This changes the formatting of the generated CSS. The following values are valid:
 
   * nested
   * expanded
@@ -54,9 +69,9 @@ Currently `compile_scss.py` can be passed a variety of command line arguments to
 
 If no options are passed to `compile_scss.py`, the default values will be used.
 
-Options are passed after the `compile_scss.py`, separated by spaces:
+Options are passed after the `compile_scss`, separated by spaces:
 
->`python compile_scss.py output_dir='<DIRECTORY_PATH>' output_name='<FILENAME>.css' format='<OPTION>'`
+>`compile_scss --root <DIRECTORY_PATH> --scss_dir <DIRECTORY_PATH> --css_dir <FILENAME> --css_filename <FILENAME>.css`
 
 ---
 
