@@ -293,9 +293,7 @@ def config_is_valid(config):
     Raises errors if directory paths do not exist, CSS filename is not valid,
     or the output style is not one of the available options.
     '''
-    required_keys  = ['root', 'scss_dir', 'css_dir', 'css_filename', 'output_style']
-    
-
+    required_keys  = ['root', 'scss_dir', 'css_dir', 'css_filename', 'output_style', 'config_file']
     
     try:
         validations = {
@@ -307,7 +305,6 @@ def config_is_valid(config):
             'output_style': valid_output_style(config)
         }
 
-
         if not all(validations.values()):
             raise ValueError
 
@@ -317,8 +314,12 @@ def config_is_valid(config):
     except KeyError:
         return False
     
+
     config['root']     = format_directory_name(config['root'])
     config['scss_dir'] = format_directory_name(config['scss_dir'])
     config['css_dir']  = format_directory_name(config['css_dir'])
-
+   
+    config_file = path.join(config['root'], 'compile_scss_config.json')    
+    config['config_file'] = format_directory_name(config_file)
+    
     return config

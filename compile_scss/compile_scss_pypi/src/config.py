@@ -4,35 +4,50 @@ import re
 import json
 
 def display_config(config):
-    click.echo("\tYour current configuration:")
+    '''
+    Display the current contents of the configuration file.
+    '''
+    click.echo("\nYour current configuration:")
 
-    click.echo(f"\t{'-' * 30}")
+    click.echo(f"{'-' * 30}")
     for key in config.keys():
-        click.echo(f"\t- {key}: {config[key]}")
+        click.echo(f"    - {key}: {config[key]}")
     
     return
 
-def set_config_file(config, config_file_path = '', message = ''):
+def display_message(message, divider, width, no_top = False):
+    '''
+    Display a formatted message to the user.
+    '''
+    if no_top == False:
+        click.echo(f"\n{divider * width}")
+
+    click.echo(f"{message}".center(width, ' '))
+    click.echo(f"{divider * width}")
+
+
+def set_config_file(config, config_file_path = ''):
     '''
     Read, Evaluate, Print, Loop allowing the user to set 
     new option values and generating a JSON config file or 
     to return the default values set within compile_scss
     '''
-    print(f"{config = }")
 
-#     menu_config_with_config = {
+#     menu_options_with_config = {
 #         '1': 'Create or edit configuration file',
 #         '2': 'Use current configuration',
 #         '3': 'Exit',
 #     }
 
-#     menu_config_no_config = {
+#     menu_options_no_config = {
 #         '1': 'Create configuration file',
 #         '2': 'Exit',
 #     }
 
-#     splash_msg = "Configure Compile SCSS"
-#     display_message(splash_msg, divider='-', width = 40)
+    splash_msg = "Configure Compile SCSS"
+    display_message(splash_msg, divider='-', width = 40)
+
+    if config == {}:
 
 #     if message != '':
 #         display_message(message, divider='', width = len(message) // 2, no_top = True)
@@ -40,10 +55,10 @@ def set_config_file(config, config_file_path = '', message = ''):
 
 #     if config_file == '':
 #         click.echo(f"No configuration file was found in the current root directory:\n\n\t{config['root']}")
-#         menu_config = menu_config_no_config
+#         menu_config = menu_options_no_config
 #     else:
 #         click.echo(f"Configuration file loaded: {config_file}\n")
-#         menu_config = menu_config_no_config
+#         menu_config = menu_options_with_config
 
 #         if config != {}:
 #             click.echo("\tYour current configuration:")
