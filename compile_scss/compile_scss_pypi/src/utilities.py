@@ -12,6 +12,14 @@ VALID_OUTPUT_STYLES = [
     'nested',
 ]
 
+def error_quit():
+    click.echo('\nPlease check your configuration file or use the')
+    click.echo('--set_config flag to create a new one.\n')
+
+    exit()
+
+
+
 def format_directory_name(directory):
     '''
     Expands directory paths with ./, ../, or ~/ and 
@@ -192,7 +200,10 @@ def read_config_file(root):
                 config = json.load(config_file)
 
                 if isinstance(config, dict):
-                    return config 
+                    if config != {}:
+                        return config 
+                    elif config == {}:
+                        raise ValueError("\nYour configuration file cannot be blank.")
                 else:
                     raise TypeError("\nYour configuration file does not contain a valid JSON object.")
 
@@ -200,15 +211,12 @@ def read_config_file(root):
         except json.JSONDecodeError as error:
             click.echo(error)
             click.echo("\nThere was a problem loading the JSON in your configuration file.\n\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--set_config' flag to generate a new configuration file.")
-            return {}
 
-        except TypeError as error:
+        except (TypeError, ValueError) as error:
             click.echo(error)
-            return {}
 
         except PermissionError:
             click.echo("\nYou don't have permission to access the given root directory or configuration file.")
-            return {}
 
     # if no configuration file is found, return an empty dictionary
     return {}
@@ -284,22 +292,26 @@ def config_is_valid(config):
     '''
     required_keys  = ['root', 'scss_dir', 'css_dir', 'css_filename', 'output_style']
     
-    validations = {
-        'config_keys' : has_required_keys(config, required_keys),
-        'root_dir'    : valid_path(config['root']),
-        'scss_dir'    : valid_path(config['scss_dir']),
-        'css_dir'     : valid_path(config['css_dir']),
-        'css_filename': valid_filename(config['css_filename'], 'css'),
-        'output_style': valid_output_style(config)
-    }
+
     
     try:
+        validations = {
+            'config_keys' : has_required_keys(config, required_keys),
+            'root_dir'    : valid_path(config['root']),
+            'scss_dir'    : valid_path(config['scss_dir']),
+            'css_dir'     : valid_path(config['css_dir']),
+            'css_filename': valid_filename(config['css_filename'], 'css'),
+            'output_style': valid_output_style(config)
+        }
+
+
         if not all(validations.values()):
             raise ValueError
-    except ValueError as error:
-        click.echo('\nPlease check your configuration file or use the')
-        click.echo('--set_config flag to create a new one.')
 
+    except ValueError:
+        return False
+
+    except KeyError:
         return False
     
     config['root']     = format_directory_name(config['root'])

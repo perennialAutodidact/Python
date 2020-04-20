@@ -9,7 +9,7 @@ def set_config_file(options, config_file_path = '', message = ''):
     new option values and generating a JSON config file or 
     to return the default values set within compile_scss
     '''
-    print(options)
+    # print(options)
 
 #     menu_options_with_config = {
 #         '1': 'Create or edit configuration file',

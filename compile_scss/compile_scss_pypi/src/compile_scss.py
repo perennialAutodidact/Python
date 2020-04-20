@@ -40,13 +40,20 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
     config = read_config_file(root)
     config_file_path = path.join(format_directory_name(root), 'compile_scss_config.json')
 
+    # print(f"{config = }")
+
     # if no config was found, set defaults dict to default options
     if config == {}:
-        config = set_config_file(config, config_file_path = '')
-    else:
-        if config_is_valid(config):
-            config = set_config_file(config, config_file_path = config_file_path)
-        
+        click.echo('\nPlease check your configuration file or use the')
+        click.echo('--set_config flag to create a new one.\n')
+
+        return
+    elif config != {}:
+
+        if not config_is_valid(config):
+            error_quit()
+
+           
 
     # if the --set_config flag is True, pass the default options
     # to set_config_file to edit or create the config file
