@@ -3,21 +3,30 @@ from src.utilities import valid_path, format_directory_name
 import re
 import json
 
-def set_config_file(options, config_file_path = '', message = ''):
+def display_config(config):
+    click.echo("\tYour current configuration:")
+
+    click.echo(f"\t{'-' * 30}")
+    for key in config.keys():
+        click.echo(f"\t- {key}: {config[key]}")
+    
+    return
+
+def set_config_file(config, config_file_path = '', message = ''):
     '''
     Read, Evaluate, Print, Loop allowing the user to set 
     new option values and generating a JSON config file or 
     to return the default values set within compile_scss
     '''
-    # print(options)
+    print(f"{config = }")
 
-#     menu_options_with_config = {
+#     menu_config_with_config = {
 #         '1': 'Create or edit configuration file',
 #         '2': 'Use current configuration',
 #         '3': 'Exit',
 #     }
 
-#     menu_options_no_config = {
+#     menu_config_no_config = {
 #         '1': 'Create configuration file',
 #         '2': 'Exit',
 #     }
@@ -30,34 +39,34 @@ def set_config_file(options, config_file_path = '', message = ''):
 
 
 #     if config_file == '':
-#         click.echo(f"No configuration file was found in the current root directory:\n\n\t{options['root']}")
-#         menu_options = menu_options_no_config
+#         click.echo(f"No configuration file was found in the current root directory:\n\n\t{config['root']}")
+#         menu_config = menu_config_no_config
 #     else:
 #         click.echo(f"Configuration file loaded: {config_file}\n")
-#         menu_options = menu_options_no_config
+#         menu_config = menu_config_no_config
 
-#         if options != {}:
+#         if config != {}:
 #             click.echo("\tYour current configuration:")
 
 #             click.echo(f"\t{'-' * 30}")
-#             for key in options.keys():
-#                 click.echo(f"\t- {key}: {options[key]}")
+#             for key in config.keys():
+#                 click.echo(f"\t- {key}: {config[key]}")
 
 #     while True:
-#         click.echo("\nPlease choose from the following options: \n")
+#         click.echo("\nPlease choose from the following config: \n")
     
 #         #  display each menu option with it's message
-#         for number in menu_options.keys():
-#             click.echo(f"{number}. {menu_options[number]}")
+#         for number in menu_config.keys():
+#             click.echo(f"{number}. {menu_config[number]}")
 
 #         choice = click.prompt("\nEnter the number of your selection")
-#         if choice not in menu_options.keys():
+#         if choice not in menu_config.keys():
 #             message = f"Your entry '{choice}' is not a valid selection"
 #             display_message(message, divider='* ', width=len(message)//2)
 #             continue
 #         elif choice == "1":
 #             #  ask user for a value for each config option
-#             options = prompt_for_options(options)
+#             config = prompt_for_config(config)
 #             break
 #         elif choice == "2":
 
@@ -70,14 +79,14 @@ def set_config_file(options, config_file_path = '', message = ''):
 #             click.echo("\nGoodbye!\n")
 #             exit()
 
-#     return options
+#     return config
 
 
 
-# def prompt_for_options(options):
+# def prompt_for_config(config):
 #     '''
 #     REPL that prompts user for a value for each option,
-#     if they choose to override the default options.
+#     if they choose to override the default config.
 #     '''
 #     OUTPUT_STYLES = ['compact', 'compressed', 'expanded', 'nested']
 #     prompts = {
@@ -95,14 +104,14 @@ def set_config_file(options, config_file_path = '', message = ''):
 #         },
 #         'output_style': {
 #             'msg': f"the output style of your CSS ({', '.join(['compact', 'compressed', 'expanded', 'nested'])})",
-#             'options': OUTPUT_STYLES
+#             'config': OUTPUT_STYLES
 #         }
 #     }
 
 #     filename_regex = r'[^\WA-Z0-9\-_][a-z-]+'
 
 #     while True:
-#         for key in options.keys():
+#         for key in config.keys():
 #             while True:
 #                 prompt_message = prompts[key]['msg']
 #                 user_entry = click.prompt(f"Please enter {prompt_message}")
@@ -114,7 +123,7 @@ def set_config_file(options, config_file_path = '', message = ''):
 #                         invalid_entry(user_entry, 'directory')
 #                         continue
 #                     else:
-#                         options[key] = format_directory_name(user_entry)
+#                         config[key] = format_directory_name(user_entry)
 #                         break  # break SCSS/CSS directory loops
 
 #                 # receive user value for CSS file name
@@ -134,26 +143,26 @@ def set_config_file(options, config_file_path = '', message = ''):
 #                         )
 #                         continue
 #                     else:
-#                         options[key] = user_entry + '.css'
+#                         config[key] = user_entry + '.css'
 #                         break  # break file name loop
 
-#                 # if the prompt has additional options,
+#                 # if the prompt has additional config,
 #                 # ensure that input is on of them
-#                 elif 'options' in prompts[key].keys():
-#                     if user_entry not in prompts[key]['options']:
+#                 elif 'config' in prompts[key].keys():
+#                     if user_entry not in prompts[key]['config']:
 #                         invalid_entry(user_entry, 'output style')
 
 #                         continue
 #                     else:
-#                         options[key] = user_entry
-#                         break  # break output_style options loop
+#                         config[key] = user_entry
+#                         break  # break output_style config loop
 #                 else:
 #                     break  # break while loop for current key
         
-#         return options
+#         return config
 
-# def write_config(options):
-#     new_file_path = options['root'] + 'compile_scss_config.json'
+# def write_config(config):
+#     new_file_path = config['root'] + 'compile_scss_config.json'
 
 #     # open the target config file, otherwise create it
 #     with open(new_file_path, 'a+') as config_file:
@@ -161,7 +170,7 @@ def set_config_file(options, config_file_path = '', message = ''):
 #         config_file.truncate(0)
 
 #         # write new contents
-#         contents = json.dumps(options, indent=4, separators=(',', ': '))
+#         contents = json.dumps(config, indent=4, separators=(',', ': '))
 #         config_file.write(contents)
 
 # def invalid_entry(entry, option_type):

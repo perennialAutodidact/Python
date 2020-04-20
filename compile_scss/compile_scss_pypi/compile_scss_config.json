@@ -1,6 +1,5 @@
 {
     "root": "./",
-    "scss_dir"    : "../example/scss",
     "css_dir"     : "../example/css",
     "css_filename": "index.css",
     "output_style": "expanded"

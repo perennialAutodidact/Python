@@ -12,9 +12,12 @@ VALID_OUTPUT_STYLES = [
     'nested',
 ]
 
-def error_quit():
-    click.echo('\nPlease check your configuration file or use the')
-    click.echo('--set_config flag to create a new one.\n')
+def error_quit(error):
+    '''
+    Display a message and quit the program when an error is raised.
+    '''
+    click.echo(error)
+    click.echo('Use the --set_config flag to edit your current\nconfiguration file or to create a new one.\n')
 
     exit()
 
@@ -187,18 +190,17 @@ def read_config_file(root):
     file_list = listdir(root)
 
     config_filename = 'compile_scss_config.json'
-
+    try: 
     # if config_file is in the list of files
-    if config_filename in file_list:
+        if config_filename in file_list:
 
-        full_path = path.join(root, config_filename)
+            full_path = path.join(root, config_filename)
 
             # open the file, read the contents and parse
             # json object into a dictionary
-        try:    
+   
             with open(full_path, 'r') as config_file:
                 config = json.load(config_file)
-
                 if isinstance(config, dict):
                     if config != {}:
                         return config 
@@ -206,17 +208,18 @@ def read_config_file(root):
                         raise ValueError("\nYour configuration file cannot be blank.")
                 else:
                     raise TypeError("\nYour configuration file does not contain a valid JSON object.")
-
+        else:
+            raise FileNotFoundError(f"\nNo configuration file was found in {format_directory_name(root)}")
         # If errors are raised, return an empty dictionary
-        except json.JSONDecodeError as error:
-            click.echo(error)
-            click.echo("\nThere was a problem loading the JSON in your configuration file.\n\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--set_config' flag to generate a new configuration file.")
+    except json.JSONDecodeError as error:
+        click.echo(error)
+        click.echo("\nThere was a problem loading the JSON in your configuration file.\n\nCheck the JSON syntax and try again, or just run compile_scss\nwith the '--set_config' flag to generate a new configuration file.")
 
-        except (TypeError, ValueError) as error:
-            click.echo(error)
+    except (TypeError, ValueError, FileNotFoundError) as error:
+        click.echo(error)
 
-        except PermissionError:
-            click.echo("\nYou don't have permission to access the given root directory or configuration file.")
+    except PermissionError:
+        click.echo("\nYou don't have permission to access the given root directory or configuration file.")
 
     # if no configuration file is found, return an empty dictionary
     return {}
