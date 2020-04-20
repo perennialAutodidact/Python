@@ -25,20 +25,13 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
     Run: 'compile_scss --help' to view all usage options.
     '''
 
-    # # Create dictionary of default option values
-    # defaults = {
-    #     'root'        : format_directory_name(root),
-    #     'scss_dir'    : format_directory_name(scss_dir),
-    #     'css_dir'     : format_directory_name(css_dir),
-    #     'css_filename': css_filename,
-    #     'output_style': output_style,
-    # }
-
     # check for config file in root directory and 
     # override defaults to options dict if found,
     # otherwise, options = {}
     config = read_config_file(root)
     config_file_path = path.join(format_directory_name(root), 'compile_scss_config.json')
+
+    print(f"{config = }")
 
     # if no config was found, set defaults dict to default options
     if config == {}:
@@ -53,8 +46,10 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
         if not config_is_valid(config):
             error_quit("\nPlease check the configuration file in your project's root directory.")
 
-     
+        click.echo(f"\nConfig file successfully loaded:\n{config['config_file']}")
 
+        if set_config:
+            config = set_config_file(config)
     # create or replace config_file
     # write_config(options)
 
