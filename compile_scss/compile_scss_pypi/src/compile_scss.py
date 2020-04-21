@@ -32,7 +32,9 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
     config_file_path = path.join(format_directory_name(root), 'compile_scss_config.json')
 
     print(f"{config = }")
-
+    splash_msg = "Compile SCSS"
+    display_message(splash_msg, divider='-', width = 40, no_top=True)
+    
     # if no config was found, set defaults dict to default options
     if config == {}:
         # if the --set_config flag is True, pass the default config
@@ -40,16 +42,25 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
         if set_config:
             config = set_config_file(config)
         else:
-            error_quit(f"\nNavigate to your projects root directory and check for a configuration file named 'compile_scss_config.json'")
+            error_quit(f"\nNavigate to your project's root directory and check for a configuration file named 'compile_scss_config.json'")
     
     elif config != {}:
         if not config_is_valid(config):
             error_quit("\nPlease check the configuration file in your project's root directory.")
 
-        click.echo(f"\nConfig file successfully loaded:\n{config['config_file']}")
+        config_file = path.join(config['root'], 'compile_scss_config.json')
+        click.echo(f"\nConfig file successfully loaded:\n{config_file}")
 
         if set_config:
-            config = set_config_file(config)
+            config = set_config_file(config, config_file = config_file)
+    
+
+    # CHANGE vTHISv TO TRY/EXCEPT IN WRITE_CONFIG()
+    # if the configuration is valid,
+    # 
+    if config_is_valid(config):
+        write_config(config)
+        
     # create or replace config_file
     # write_config(options)
 

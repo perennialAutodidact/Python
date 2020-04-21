@@ -1,8 +1,7 @@
 {
-    "root"        : "./",
-    "scss_dir"    : "../example/scss",
-    "css_dir"     : "../example/css",
-    "css_filename": "index.css",
-    "output_style": "expanded",
-    "config_file" : "./compile_scss_config.json"
+    "root": "/home/kg/Documents/repos/python/compile_scss/compile_scss_pypi/",
+    "scss_dir": "/home/kg/Documents/repos/python/compile_scss/",
+    "css_dir": "/home/kg/Documents/repos/python/compile_scss/",
+    "css_filename": "m4in.css",
+    "output_style": "expanded"
 }
