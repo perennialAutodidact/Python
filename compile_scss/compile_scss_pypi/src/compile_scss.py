@@ -17,8 +17,9 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
     Run: 'compile_scss --help' to view all usage options.
     '''
     
-    # if set_config:
-    #     config = set_config_file({})
+    splash_msg = "Compile SCSS"
+    display_message(splash_msg, divider='-', width = 40)
+    
 
     # check for config file in root directory and 
     # override defaults to options dict if found,
@@ -26,10 +27,6 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
     config = read_config_file(root)
     config_file_path = path.join(format_directory_name(root), 'compile_scss_config.json')
 
-    print(f"{config = }")
-    splash_msg = "Compile SCSS"
-    display_message(splash_msg, divider='-', width = 40)
-    
     # if no config was found, set defaults dict to default options
     if config == {}:
         # if the --set_config flag is True, pass the default config

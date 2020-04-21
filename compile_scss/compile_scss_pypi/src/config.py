@@ -111,7 +111,7 @@ def prompt_for_values(config):
                 # ensure that input is on of them
                 elif 'options' in prompts[key]:
                     if user_entry not in prompts[key]['options']:
-                        message = f"You must choose one of these: {', '.join(OUTPUT_STYLES)}"
+                        message = f"You must choose one of these: {', '.join(output_styles)}"
                         display_message(message, divider='* ', width = len(message) // 2 + 1)
                         continue
                     else:
@@ -126,6 +126,7 @@ def prompt_for_values(config):
         exit()
     # create or replace config_file
     write_config(new_config)
+    click.echo(f"\nConfiguration file created! \n {new_config['root'] + 'compile_scss_config.json'}")
 
     return new_config
 
@@ -168,20 +169,18 @@ def set_config_file(config, config_file = ''):
             continue
         elif choice == "1":
             #  ask user for a value for each config option
-            print("OPTION 1")
             config = prompt_for_values(config)
             
             break
         elif choice == "2":
-
             # if no config file, exit with option 2
-            if config_file == '':
+            if config == {}:
                 click.echo("\nGoodbye!\n")
                 exit()
+            
             break
         elif choice == "3":
             click.echo("\nGoodbye!\n")
             exit()
 
-    print(f"after set_config: {config = }")
     return config
