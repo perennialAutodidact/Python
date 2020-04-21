@@ -25,69 +25,19 @@ def display_message(message, divider, width, no_top = False):
     click.echo(f"{message}".center(width, ' '))
     click.echo(f"{divider * width}")
 
+def write_config(config):
+    new_file_path = config['root'] + 'compile_scss_config.json'
 
-def set_config_file(config, config_file = ''):
-    '''
-    Read, Evaluate, Print, Loop allowing the user to set 
-    new option values and generating a JSON config file or 
-    to return the default values set within compile_scss
-    '''
+    # open the target config file, otherwise create it
+    with open(new_file_path, 'a+') as config_file:
+        # remove all contents
+        config_file.truncate(0)
 
-    menu_with_config = {
-        '1': 'Create or edit configuration file',
-        '2': 'Use current configuration',
-        '3': 'Exit',
-    }
+        # write new contents
+        contents = json.dumps(config, indent=4, separators=(',', ': '))
+        config_file.write(contents)
 
-    menu_no_config = {
-        '1': 'Create configuration file',
-        '2': 'Exit',
-    }
-
-    splash_msg = "Configure Compile SCSS"
-    display_message(splash_msg, divider='-', width = 40)
-
-    config_file = config['config_file'] if config != {} else ''
-
-    menu_options = menu_no_config if config_file == '' else menu_with_config 
-
-    if config != {}:
-        display_config(config)
-
-
-    while True:
-        click.echo("\nPlease choose from the following config:\n")
-    
-        #  display each menu option with it's message
-        for number in menu_options.keys():
-            click.echo(f"{number}. {menu_options[number]}")
-
-        choice = click.prompt("\nEnter the number of your selection")
-        if choice not in menu_options.keys():
-            message = f"Your entry '{choice}' is not a valid selection"
-            display_message(message, divider='* ', width=len(message)//2 + 1)
-            continue
-        elif choice == "1":
-            #  ask user for a value for each config option
-            config = prompt_for_config(config)
-            break
-        elif choice == "2":
-
-            # if no config file, exit with option 2
-            if config_file == '':
-                click.echo("\nGoodbye!\n")
-                exit()
-            break
-        elif choice == "3":
-            click.echo("\nGoodbye!\n")
-            exit()
-
-    print(f"after set_config: {config = }")
-    return config
-
-
-
-def prompt_for_config(config):
+def prompt_for_values(config):
     '''
     REPL that prompts user for a value for each option,
     if they choose to override the default config.
@@ -110,9 +60,6 @@ def prompt_for_config(config):
             'msg': f"the output style of your CSS ({', '.join(['compact', 'compressed', 'expanded', 'nested'])})",
             'options': OUTPUT_STYLES
         },
-        'config_file': {
-            'msg' : '',
-        }
     }
 
     while True:
@@ -161,17 +108,68 @@ def prompt_for_config(config):
         
         return config
 
-# def write_config(config):
-#     new_file_path = config['root'] + 'compile_scss_config.json'
+def set_config_file(config, config_file = ''):
+    '''
+    Read, Evaluate, Print, Loop allowing the user to set 
+    new option values and generating a JSON config file or 
+    to return the default values set within compile_scss
+    '''
 
-#     # open the target config file, otherwise create it
-#     with open(new_file_path, 'a+') as config_file:
-#         # remove all contents
-#         config_file.truncate(0)
+    menu_with_config = {
+        '1': 'Create or edit configuration file',
+        '2': 'Use current configuration',
+        '3': 'Exit',
+    }
 
-#         # write new contents
-#         contents = json.dumps(config, indent=4, separators=(',', ': '))
-#         config_file.write(contents)
+    menu_no_config = {
+        '1': 'Create configuration file',
+        '2': 'Exit',
+    }
+
+    splash_msg = "Configuration!"
+    display_message(splash_msg, divider='-', width = 40)
+
+    menu_options = menu_no_config if config_file == '' else menu_with_config 
+
+    if config != {}:
+        display_config(config)
+
+
+    while True:
+        click.echo("\nPlease choose from the following config:\n")
+    
+        #  display each menu option with it's message
+        for number in menu_options.keys():
+            click.echo(f"{number}. {menu_options[number]}")
+
+        choice = click.prompt("\nEnter the number of your selection")
+        if choice not in menu_options.keys():
+            message = f"Your entry '{choice}' is not a valid selection"
+            display_message(message, divider='* ', width=len(message)//2 + 1)
+            continue
+        elif choice == "1":
+            #  ask user for a value for each config option
+            config = prompt_for_values(config)
+            break
+        elif choice == "2":
+
+            # if no config file, exit with option 2
+            if config_file == '':
+                click.echo("\nGoodbye!\n")
+                exit()
+            break
+        elif choice == "3":
+            click.echo("\nGoodbye!\n")
+            exit()
+
+    print(f"after set_config: {config = }")
+    return config
+
+
+
+
+
+
 
 # def invalid_entry(entry, option_type):
 #     '''

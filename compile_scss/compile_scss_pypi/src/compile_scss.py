@@ -32,7 +32,9 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
     config_file_path = path.join(format_directory_name(root), 'compile_scss_config.json')
 
     print(f"{config = }")
-
+    splash_msg = "Compile SCSS"
+    display_message(splash_msg, divider='-', width = 40, no_top=True)
+    
     # if no config was found, set defaults dict to default options
     if config == {}:
         # if the --set_config flag is True, pass the default config
