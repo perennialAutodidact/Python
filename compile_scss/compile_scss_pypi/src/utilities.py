@@ -17,7 +17,7 @@ def error_quit(error):
     Display a message and quit the program when an error is raised.
     '''
     click.echo(error)
-    click.echo('Use the --set_config flag to edit your current\nconfiguration file or to create a new one.\n')
+    click.echo('Use the --set-config flag to edit your current\nconfiguration file or to create a new one.\n')
 
     exit()
 

@@ -3,56 +3,54 @@ from src.utilities import valid_path, format_directory_name, valid_filename, val
 import re
 import json
 
+
 def display_config(config):
     '''
     Display the current contents of the configuration file.
     '''
     click.echo("\nYour current configuration:")
 
-    click.echo(f"{'-' * 30}")
+    # click.echo(f"{'-' * 30}")
     for key in config.keys():
         click.echo(f"    - {key}: {config[key]}")
-    
+
     return
 
-def display_message(message, divider, width, no_top = False):
+
+def display_message(message, divider, width, no_top=False):
     '''
     Display a formatted message to the user.
     '''
-    if no_top == False:
+
+    if no_top is False:
         click.echo(f"\n{divider * width}")
 
     click.echo(f"{message}".center(width, ' '))
     click.echo(f"{divider * width}")
 
+
 def write_config(config):
     '''
-    Convert the config dictionary into JSON, then write the JSON object to compile_scss_config.json
-    
-    If the file does not exist, it will be created. 
-    
-    If the file exists it's contents are erased before the new contents are written.
+    Convert the config dictionary into JSON, then write the JSON object
+    to 'compile_scss_config.json'. If the file does not exist, it will be
+    created. If the file exists it's contents are erased before the new 
+    contents are written.
     '''
     new_file_path = config['root'] + 'compile_scss_config.json'
 
-    
     # open the target config file, otherwise create it
     with open(new_file_path, 'a+') as config_file:
         # remove all contents
         config_file.truncate(0)
-
-        # write new contents
         contents = json.dumps(config, indent=4, separators=(',', ': '))
         config_file.write(contents)
-    return
 
 
 def prompt_for_values(config):
-    '''
-    REPL that prompts user for a value for each option,
-    if they choose to override the default config.
-    '''
-    OUTPUT_STYLES = ['compact', 'compressed', 'expanded', 'nested']
+    '''REPL that prompts user for a value for each option, if they choose to override the default config.'''
+
+    output_styles = ['compact', 'compressed', 'expanded', 'nested']
+
     prompts = {
         'root': {
             'msg': "the path to your project's root directory"
@@ -68,15 +66,21 @@ def prompt_for_values(config):
         },
         'output_style': {
             'msg': f"the output style of your CSS ({', '.join(['compact', 'compressed', 'expanded', 'nested'])})",
-            'options': OUTPUT_STYLES
+            'options': output_styles
         },
     }
 
+    new_config = {key:'' for key in prompts}
+
     while True:
-        for key in config.keys():
+
+        if all(new_config.values()):
+            break
+
+        for key in new_config:
             prompt_message = prompts[key]['msg']
 
-            while key != 'config_file':
+            while True:
                 user_entry = click.prompt(f"\nPlease enter {prompt_message}")
                 
                 # if prompt is for a directory path, 
@@ -88,7 +92,7 @@ def prompt_for_values(config):
                         # invalid_entry(user_entry, 'directory')
                         continue
                     else:
-                        config[key] = format_directory_name(user_entry)
+                        new_config[key] = format_directory_name(user_entry)
                         break  # break SCSS/CSS directory loops
 
                 # receive user value for CSS file name
@@ -100,23 +104,30 @@ def prompt_for_values(config):
                         )
                         continue
                     else:
-                        config[key] = user_entry
+                        new_config[key] = user_entry
                         break  # break file name loop
 
                 # if the prompt has additional options,
                 # ensure that input is on of them
-                elif 'options' in prompts[key].keys():
+                elif 'options' in prompts[key]:
                     if user_entry not in prompts[key]['options']:
                         message = f"You must choose one of these: {', '.join(OUTPUT_STYLES)}"
                         display_message(message, divider='* ', width = len(message) // 2 + 1)
                         continue
                     else:
-                        config[key] = user_entry
+                        new_config[key] = user_entry
                         break  # break output_style config loop
                 else:
                     break  # break while loop for current key
-        
-        return config
+    try:
+        if not config_is_valid(new_config): 
+            raise ValueError
+    except ValueError:
+        exit()
+    # create or replace config_file
+    write_config(new_config)
+
+    return new_config
 
 def set_config_file(config, config_file = ''):
     '''
@@ -137,10 +148,7 @@ def set_config_file(config, config_file = ''):
         '2': 'Exit',
     }
 
-    splash_msg = "Configuration!"
-    display_message(splash_msg, divider='-', width = 40)
-
-    menu_options = menu_no_config if config_file == '' else menu_with_config 
+    menu_options = menu_no_config if config == {} else menu_with_config 
 
     if config != {}:
         display_config(config)
@@ -160,6 +168,7 @@ def set_config_file(config, config_file = ''):
             continue
         elif choice == "1":
             #  ask user for a value for each config option
+            print("OPTION 1")
             config = prompt_for_values(config)
             
             break

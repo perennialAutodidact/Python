@@ -5,14 +5,6 @@ from src.utilities import *      # extra functions for gathering SCSS and proces
 from src.observe_files import *  # Watchdog observer and associated functions
 from src.config import *         # R.E.P.L for setting option values and generating JSON config file
 
-# @click.option('--scss_dir', default='./scss',
-#                 help='Path the directory containing SCSS files and subfolders with SCSS files Default is ./scss')
-# @click.option('--css_dir', default='./css', 
-#                 help='Path to directory to receive CSS output file. Default is ./css')
-# @click.option('--css_filename', default='index.css', 
-#                 help='Name of CSS output file. Default is index.css')
-# @click.option('--output_style', default='expanded', 
-#                 help='Format of generated CSS. Options: expanded, nested, compact, compressed')
 @click.option('--root', default='./', 
                 help='Path to root project directory. Default is ./')
 @click.option('--set-config', is_flag=True,
@@ -24,6 +16,9 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
 
     Run: 'compile_scss --help' to view all usage options.
     '''
+    
+    # if set_config:
+    #     config = set_config_file({})
 
     # check for config file in root directory and 
     # override defaults to options dict if found,
@@ -33,7 +28,7 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
 
     print(f"{config = }")
     splash_msg = "Compile SCSS"
-    display_message(splash_msg, divider='-', width = 40, no_top=True)
+    display_message(splash_msg, divider='-', width = 40)
     
     # if no config was found, set defaults dict to default options
     if config == {}:
@@ -45,26 +40,17 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
             error_quit(f"\nNavigate to your project's root directory and check for a configuration file named 'compile_scss_config.json'")
     
     elif config != {}:
+        if set_config:
+            config = set_config_file(config)
         if not config_is_valid(config):
             error_quit("\nPlease check the configuration file in your project's root directory.")
+
 
         config_file = path.join(config['root'], 'compile_scss_config.json')
         click.echo(f"\nConfig file successfully loaded:\n{config_file}")
 
-        if set_config:
-            config = set_config_file(config, config_file = config_file)
+
     
-
-    # CHANGE vTHISv TO TRY/EXCEPT IN WRITE_CONFIG()
-    # if the configuration is valid,
-    # 
-    if config_is_valid(config):
-        write_config(config)
-        
-    # create or replace config_file
-    # write_config(options)
-
-    # scss_dir = options['scss_dir']
     # if not valid_path(scss_dir):
     #     message = f"*** Invalid SCSS folder ***\n{scss_dir}"
     #     set_config_file(options, config_file = path.join(root, 'compile_scss_config.json'), message = message)
