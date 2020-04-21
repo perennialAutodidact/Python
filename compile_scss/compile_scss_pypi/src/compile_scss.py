@@ -54,6 +54,13 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
         if set_config:
             config = set_config_file(config, config_file = config_file)
     
+
+    # CHANGE vTHISv TO TRY/EXCEPT IN WRITE_CONFIG()
+    # if the configuration is valid,
+    # 
+    if config_is_valid(config):
+        write_config(config)
+        
     # create or replace config_file
     # write_config(options)
 

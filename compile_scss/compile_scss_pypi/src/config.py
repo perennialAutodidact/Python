@@ -1,5 +1,5 @@
 import click
-from src.utilities import valid_path, format_directory_name, valid_filename, valid_output_style
+from src.utilities import valid_path, format_directory_name, valid_filename, valid_output_style, config_is_valid
 import re
 import json
 
@@ -26,8 +26,16 @@ def display_message(message, divider, width, no_top = False):
     click.echo(f"{divider * width}")
 
 def write_config(config):
+    '''
+    Convert the config dictionary into JSON, then write the JSON object to compile_scss_config.json
+    
+    If the file does not exist, it will be created. 
+    
+    If the file exists it's contents are erased before the new contents are written.
+    '''
     new_file_path = config['root'] + 'compile_scss_config.json'
 
+    
     # open the target config file, otherwise create it
     with open(new_file_path, 'a+') as config_file:
         # remove all contents
@@ -36,6 +44,8 @@ def write_config(config):
         # write new contents
         contents = json.dumps(config, indent=4, separators=(',', ': '))
         config_file.write(contents)
+    return
+
 
 def prompt_for_values(config):
     '''
@@ -90,7 +100,7 @@ def prompt_for_values(config):
                         )
                         continue
                     else:
-                        config[key] = user_entry + '.css'
+                        config[key] = user_entry
                         break  # break file name loop
 
                 # if the prompt has additional options,
@@ -115,6 +125,7 @@ def set_config_file(config, config_file = ''):
     to return the default values set within compile_scss
     '''
 
+    #  choose menu options base on existence of config_file
     menu_with_config = {
         '1': 'Create or edit configuration file',
         '2': 'Use current configuration',
@@ -150,6 +161,7 @@ def set_config_file(config, config_file = ''):
         elif choice == "1":
             #  ask user for a value for each config option
             config = prompt_for_values(config)
+            
             break
         elif choice == "2":
 
@@ -164,32 +176,3 @@ def set_config_file(config, config_file = ''):
 
     print(f"after set_config: {config = }")
     return config
-
-
-
-
-
-
-
-# def invalid_entry(entry, option_type):
-#     '''
-#     Display an error message in the config REPL if an invalid entry is provided by ther user.
-#     "Your entry: '{entry:str}' is not a valid {option_type:str}."
-#     '''
-#     error_message = f"\nYour entry: '{entry}' is not a valid {option_type}.\n"
-#     divider_top = f"\n{'!'*(len(error_message) + 2)}"
-#     divider_bottom = f"{'!'*(len(error_message) + 2)}\n"
-    
-#     click.echo(divider_top)
-#     click.echo(f" {error_message} ")
-#     if option_type == 'directory':
-#         click.echo(f"Either the directory does not exist yet".center(len(divider_top)-1, ' '))
-#         click.echo(f"or its path is not valid".center(len(divider_bottom)-1, ' '))
-#     click.echo(divider_bottom)
-
-# def display_message(message, divider, width, no_top = False):
-#     if no_top == False:
-#         click.echo(f"\n{divider * width}")
-
-#     click.echo(f"{message}".center(width, ' '))
-#     click.echo(f"{divider * width}\n")
