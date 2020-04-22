@@ -65,14 +65,19 @@ def dir_contains_extension(directory, extension):
     If at least one file in the directory contains the given extension, return True,
         otherwise, return False
     '''
-    if valid_path(directory):
-        file_list = listdir(directory)
+    try:
+        if valid_path(directory):
+            file_list = listdir(directory)
 
-    # if at least one filename in the directory ends in .scss, return True
-    if [True for filename in file_list if '.scss' in filename] != []:
-        return True
-    else:
-        return False
+        # if no files with the extension are found in the directory, raise error
+        if [True for filename in file_list if '.scss' in filename] == []:
+            raise FileNotFoundError(f'\nNo files with the extension {extension} were found in {directory}')
+    
+    except FileNotFoundError as error:
+        click.echo(error)
+        error_quit(f'\nPlease check the SCSS directory path in your configuration file. ')
+    
+    return True
 
 def get_extension(filename):
     '''
@@ -120,37 +125,34 @@ def get_raw_scss(file_tree, scss_dir):
     root = format_directory_name(scss_dir)
 
     raw_scss = ''
-    if valid_path(scss_dir):
-        file_tree = get_include_paths(scss_dir)
+    if dir_contains_extension(scss_dir, '.scss'):
+        scss_vars = ''
 
-        if dir_contains_extension(scss_dir, '.scss'):
-            scss_vars = ''
+        # For each file in the file tree
+        file_paths = file_tree['files']
+        for file_path in file_paths:
 
-            # For each file in the file tree
-            file_paths = file_tree['files']
-            for file_path in file_paths:
+            # if the file's extension is .scss
+            if get_extension(file_path) == 'scss':
 
-                # if the file's extension is .scss
-                if get_extension(file_path) == 'scss':
+                # open the file and add its contents to raw_scss variable
+                with open(file_path, 'r') as scss_file:
+                    raw_scss += '\n'
 
-                    # open the file and add its contents to raw_scss variable
-                    with open(file_path, 'r') as scss_file:
-                        raw_scss += '\n'
+                    # ignore @import lines, it's all getting smooshed together anyway
+                    # separate scss vars
+                    for line in scss_file.readlines():
+                        if '@import' in line:
+                            continue
+                        elif line[0] == "$":
+                            scss_vars += line
+                        else:
+                            raw_scss += line + '\n'
 
-                        # ignore @import lines, it's all getting smooshed together anyway
-                        # separate scss vars
-                        for line in scss_file.readlines():
-                            if '@import' in line:
-                                continue
-                            elif line[0] == "$":
-                                scss_vars += line
-                            else:
-                                raw_scss += line + '\n'
-
-            # add scss vars at the very top of all scss
-            # this is a workaround for lack of support for @import
-            # in Libsass (or my own inability to figure it out)
-            raw_scss = scss_vars + raw_scss
+        # add scss vars at the very top of all scss
+        # this is a workaround for lack of support for @import
+        # in Libsass (or my own inability to figure it out)
+        raw_scss = scss_vars + raw_scss
 
     return raw_scss
 

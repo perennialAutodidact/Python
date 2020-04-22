@@ -48,17 +48,12 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
 
 
     
-    # if not valid_path(scss_dir):
-    #     message = f"*** Invalid SCSS folder ***\n{scss_dir}"
-    #     set_config_file(options, config_file = path.join(root, 'compile_scss_config.json'), message = message)
+    scss_dir = config['scss_dir']
+    file_tree = get_include_paths(scss_dir)
+    raw_scss = get_raw_scss(file_tree, scss_dir)
+
+    print(f"{raw_scss = }")
     
-    # file_tree = get_include_paths(scss_dir)
-    # raw_scss = get_raw_scss(file_tree, scss_dir)
-    
-    # if raw_scss != '':
-    #     write_css(raw_scss, options)
-    # elif raw_scss == '':
-    #     message = f"*** No SCSS found in SCSS directory: {scss_dir}"
-    #     set_config_file(options, config_file = path.join(root, 'compile_scss_config.json'), message=message)
+    write_css(raw_scss, config)
 
 
