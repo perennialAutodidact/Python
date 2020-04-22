@@ -5,7 +5,7 @@ with open("README.md") as readme:
 
 setup(
     name="Compile SCSS",
-    version="0.7.0",
+    version="0.9.0",
     description="Compile multiple SCSS files into a single CSS file",
     long_description=long_description,
     long_description_context_type="text/markdown",

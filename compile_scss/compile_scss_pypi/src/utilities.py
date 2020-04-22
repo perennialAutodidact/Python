@@ -157,7 +157,7 @@ def get_raw_scss(file_tree, scss_dir):
     return raw_scss
 
 
-def write_css(raw_scss, options):
+def write_css(raw_scss, config):
     '''
         Creates a new css file in the target CSS directory if it doesn't exist,
             then overwrites all contents with the compiled CSS.
@@ -166,10 +166,10 @@ def write_css(raw_scss, options):
     if raw_scss != '':
         compiled_css = sass.compile(
             string=raw_scss, 
-            output_style=f"{options['output_style']}"
+            output_style=f"{config['output_style']}"
         )
 
-        new_file_path = options['css_dir'] + options['css_filename']
+        new_file_path = config['css_dir'] + config['css_filename']
 
         # open the target css file, otherwise create it
         with open(new_file_path, 'a+') as css_file:

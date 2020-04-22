@@ -1,9 +1,13 @@
 import sass   # SCSS => CSS compiler
 import click  # For turning functions into terminal commands
 
-from src.utilities import *      # extra functions for gathering SCSS and processing CSS
-from src.observe_files import *  # Watchdog observer and associated functions
-from src.config import *         # R.E.P.L for setting option values and generating JSON config file
+
+# extra functions for gathering SCSS and processing CSS
+from src.utilities import *
+# Watchdog observer and associated functions
+from src.observe_files import *
+# R.E.P.L for setting option values and generating JSON config file
+from src.config import set_config_file, display_message 
 
 @click.option('--root', default='./', 
                 help='Path to root project directory. Default is ./')
@@ -53,11 +57,9 @@ def compile_scss(root, set_config, watch): #(root, scss_dir, css_dir, css_filena
     scss_dir = config['scss_dir']
     file_tree = get_include_paths(scss_dir)
     raw_scss = get_raw_scss(file_tree, scss_dir)
-
-    print(f"{raw_scss = }")
     
     write_css(raw_scss, config)
 
     # start the watchdog observer if --watch flag present
     if watch:
-        print('watching')
+       create_observer(config)

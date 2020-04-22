@@ -1,8 +1,9 @@
 import time
+from src.utilities import get_raw_scss, write_css, get_include_paths
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
-def create_observer():
+def create_observer(config):
     patterns = '*'
     ignore_patterns = ''
     ignore_directories = ''
@@ -14,21 +15,16 @@ def create_observer():
         case_sensitive = True
     )
 
-    def on_created(event):
-        print(f"File created: {event.src_path}")
-    def on_deleted(event):
-        print(f"File deleted: {event.src_path}")
-    def on_modified(event):
-        print(f"File modified: {event.src_path}")
-    def on_moved(event):
-        print(f"File moved: {event.src_path}")
+    def on_change(event, config=config):
+        scss_dir = config['scss_dir']
+        file_tree = get_include_paths(scss_dir)
+        raw_scss = get_raw_scss(file_tree, scss_dir)
+        write_css(raw_scss, config)
 
-    fileChangeHandler.on_created = on_created
-    fileChangeHandler.on_deleted = on_deleted
-    fileChangeHandler.on_modified = on_modified
-    fileChangeHandler.on_moved = on_moved
 
-    path = '.'
+    fileChangeHandler.on_any_event = on_change
+
+    path = config['scss_dir']
     observer = Observer()
     observer.schedule(
         fileChangeHandler,
@@ -38,7 +34,7 @@ def create_observer():
 
     observer.start()
     try:
-        print("Watching...")
+        print(f"\nWatching {config['scss_dir']}...")
         print("Press Ctrl + C to stop.")
         while True:
             time.sleep(1)
