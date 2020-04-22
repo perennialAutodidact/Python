@@ -9,8 +9,10 @@ from src.config import *         # R.E.P.L for setting option values and generat
                 help='Path to root project directory. Default is ./')
 @click.option('--set-config', is_flag=True,
                 help='Check current configuration or set new values for compile_scss_config.json file.')
+@click.option('--watch', is_flag=True,
+                help='Watches user\'s SCSS directory and updates the CSS file with every saved change')
 @click.command()
-def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, output_style, config):
+def compile_scss(root, set_config, watch): #(root, scss_dir, css_dir, css_filename, output_style, config):
     '''
     Main command in Compile SCSS package.
 
@@ -56,4 +58,6 @@ def compile_scss(root, set_config): #(root, scss_dir, css_dir, css_filename, out
     
     write_css(raw_scss, config)
 
-
+    # start the watchdog observer if --watch flag present
+    if watch:
+        print('watching')
