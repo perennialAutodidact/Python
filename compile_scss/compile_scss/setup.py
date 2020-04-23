@@ -5,13 +5,13 @@ with open("README.md") as readme:
 
 setup(
     name="Compile SCSS",
-    version="0.5.0",
+    version="1.0.0",
     description="Compile multiple SCSS files into a single CSS file",
     long_description=long_description,
-    long_description_context_type="text/markdown",
+    long_description_content_type="text/markdown",
     author="Keegan Good",
     author_email="keegood8@gmail.com",
-    py_modules=['compile_scss', 'compiler_utilities', 'observe_files'],
+    py_modules=['compile_scss', 'utilities', 'observe_files', 'config'],
     packages=find_packages(exclude=[]),
     python_requires=">=3.6",
     install_requires=[
@@ -23,7 +23,7 @@ setup(
         "console_scripts":["compile_scss=src.compile_scss:compile_scss"],
     },
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",

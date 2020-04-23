@@ -7,7 +7,6 @@ verify_ssl = true
 
 [packages]
 compile-scss = {editable = true,path = "."}
-watchdog = "*"
 
 [requires]
 python_version = "3.8"

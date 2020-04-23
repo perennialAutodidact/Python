@@ -1,5 +1,6 @@
 * {
   margin: 0;
+  padding: 0;
 }
 
 .container {
@@ -55,4 +56,8 @@
 
 .folder-tree-test {
   color: #114747;
+}
+
+.watchdog_test {
+  color: aquamarine;
 }
