@@ -1,12 +1,10 @@
 # Compile SCSS
 
-## v0.9.1
+## v1.0.0
 
 A CLI utility for compiling multiple SCSS files into a single CSS file to avoid linking a million CSS files within a project. Compile SCSS utilizes Click to construct its CLI interface.
 
 ## Installation
-
-This doesn't work yet, but will soon:
 
 `pip install compile_scss`
 
