@@ -1,10 +1,8 @@
 from random import choice as randchoice
+from random import random
 
-def pick_fruits(n):
-    '''
-    Returns a list of n randomly selected fruits
-    '''
-    all_fruits = [
+def all_fruits():
+    fruits = [
         "Ackee",
         "Apple",
         "Apricot",
@@ -123,8 +121,23 @@ def pick_fruits(n):
         "Yuzu",
         "Zucchini",
     ]
+    return fruits
 
-    return [randchoice(all_fruits) for i in range(n)]
+def pick_fruit(n = 1):
+    '''
+    Returns a list of n randomly selected fruits. 
+    If no value for n is passed, a single fruit is selected
+    '''
+    fruits = all_fruits()
+    
+    if n == 1:
+        return randchoice(fruits)
+    
+    return [randchoice(fruits) for i in range(n)]
 
-fruits = pick_fruits(1)
-print(fruits)
+def fruit_prices(n):
+    fruits = all_fruits()
+
+    basket = {}
+    for i in range(n):
+        fruit = randchoice(fruits)
