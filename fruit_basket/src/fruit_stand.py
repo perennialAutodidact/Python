@@ -1,5 +1,4 @@
-from random import choice as randchoice
-from random import random
+from random import random, randint, choice
 
 def all_fruits():
     fruits = [
@@ -131,13 +130,27 @@ def pick_fruit(n = 1):
     fruits = all_fruits()
     
     if n == 1:
-        return randchoice(fruits)
+        return choice(fruits)
     
-    return [randchoice(fruits) for i in range(n)]
+    return [choice(fruits) for i in range(n)]
 
 def fruit_prices(n):
     fruits = all_fruits()
 
+    return {choice(fruits):round(random(), 2) for i in range(n)}
+
+def fill_basket(n):
+    fruits = all_fruits()
+
     basket = {}
     for i in range(n):
-        fruit = randchoice(fruits)
+        fruit = choice(fruits)
+        while fruit in basket:
+            fruit = choice(fruits)
+        
+        basket[fruit] = {}
+        basket[fruit]['quantity'] = randint(1, 10)
+        basket[fruit]['price_per'] = round(random(), 2)
+        basket[fruit]['item_total'] = round(basket[fruit]['quantity'] * basket[fruit]['price_per'], 2)
+    return basket
+

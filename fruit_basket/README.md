@@ -1,5 +1,5 @@
-# Fruit Basket
+# Fruit Stand
 
 ## v0.0.1
 
-Fruit Basket generate lists and dictionaries with fruit names for demonstrating  fundamentals in Python.
+Fruit Stand generates lists or dictionaries of fruits to streamline to demonstration of Python fundumentals involving the two data types.

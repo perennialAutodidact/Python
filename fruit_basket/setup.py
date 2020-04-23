@@ -4,9 +4,9 @@ with open("README.md") as readme:
     long_description = readme.read()
 
 setup(
-    name="fruit_basket",
+    name="fruit_stand",
     version="0.0.1",
-    description="Generate lists and dictionaries with fruit names for demonstrating  fundamentals in Python.",
+    description="Generate lists and dictionaries with fruit names for demonstrating fundamentals in Python.",
     long_description=long_description,
     long_description_context_type="text/markdown",
     author="Keegan Good",
