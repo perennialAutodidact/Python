@@ -170,6 +170,8 @@ def fruit_prices(n):
         return None
 
     return inventory
+
+    
 def fill_basket(n):
     '''
     Returns a dictionary of fruits, their quantity, 
