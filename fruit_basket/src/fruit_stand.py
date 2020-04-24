@@ -122,35 +122,77 @@ def all_fruits():
     ]
     return fruits
 
-def pick_fruit(n = 1):
+def shopping_list(n = 1):
     '''
     Returns a list of n randomly selected fruits. 
     If no value for n is passed, a single fruit is selected
     '''
-    fruits = all_fruits()
-    
-    if n == 1:
-        return choice(fruits)
-    
-    return [choice(fruits) for i in range(n)]
+
+    try: 
+        fruits = all_fruits()
+
+        if n == 1:
+            return choice(fruits)
+        
+        fruit_list = []
+        for i in range(n):
+            fruit = choice(fruits)
+            
+            while fruit in fruit_list: 
+                fruit = choice(fruits)
+
+            fruit_list.append(fruit)
+
+    except TypeError:
+        print(f"'{type(n)}' object '{n}' cannot be interpreted as an integer")
+        return None
+        
+    return fruit_list
 
 def fruit_prices(n):
-    fruits = all_fruits()
+    '''
+    Returns a dictionary of random fruits and a random
+    price between 0.0 and 1.0
+    '''
+    try:
+        fruits = all_fruits()
 
-    return {choice(fruits):round(random(), 2) for i in range(n)}
-
-def fill_basket(n):
-    fruits = all_fruits()
-
-    basket = {}
-    for i in range(n):
-        fruit = choice(fruits)
-        while fruit in basket:
+        inventory = {}
+        for i in range(n):
             fruit = choice(fruits)
-        
-        basket[fruit] = {}
-        basket[fruit]['quantity'] = randint(1, 10)
-        basket[fruit]['price_per'] = round(random(), 2)
-        basket[fruit]['item_total'] = round(basket[fruit]['quantity'] * basket[fruit]['price_per'], 2)
+            while fruit in inventory:
+                fruit = choice(fruits)
+
+            inventory[fruit] = round(random(), 2)    
+    
+    except TypeError:
+        print(f"'{type(n)}' object '{n}' cannot be interpreted as an integer")
+        return None
+
+    return inventory
+def fill_basket(n):
+    '''
+    Returns a dictionary of fruits, their quantity, 
+    price_per item and the running total for each item
+    '''
+    try:
+        fruits = all_fruits()
+
+        basket = {}
+        for i in range(n):
+            fruit = choice(fruits)
+            while fruit in basket:
+                fruit = choice(fruits)
+            
+            basket[fruit] = {}
+            basket[fruit]['quantity'] = randint(1, 10)
+            basket[fruit]['price_per'] = round(random(), 2)
+            basket[fruit]['item_total'] = round(basket[fruit]['quantity'] * basket[fruit]['price_per'], 2)
+    
+    except TypeError:
+        print(f"'{type(n)}' object '{n}' cannot be interpreted as an integer")
+        return None
+
     return basket
+
 
