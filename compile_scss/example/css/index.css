@@ -61,3 +61,8 @@
 .watchdog_test {
   color: aquamarine;
 }
+
+.test-class {
+  color: #abff2e;
+  border: 1px solid brown;
+}
