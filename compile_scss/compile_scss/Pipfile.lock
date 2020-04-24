@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a45ed0ff858918cb46d480ba882c2caf07ae2458015977f6436ddd2e0a07f448"
+            "sha256": "e942ff3f815684758af30acd1c2cc6c92a6d8937c27ee96ce6cea0a241fef4cb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -24,8 +24,11 @@
             "version": "==7.1.1"
         },
         "compile-scss": {
-            "editable": true,
-            "path": "."
+            "hashes": [
+                "sha256:791be5b9c903e74eea2ab3e4d52ca8711a6985ec486dd41b0de6d91d52c4307f"
+            ],
+            "index": "pypi",
+            "version": "==1.0.0"
         },
         "libsass": {
             "hashes": [
