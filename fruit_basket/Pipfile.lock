@@ -1,0 +1,25 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "45270cdd9187653fc624683843a3caef5fe7c4538ae44460568fb529ae2a3fb8"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.8"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "fruit-stand": {
+            "editable": true,
+            "path": "."
+        }
+    },
+    "develop": {}
+}
