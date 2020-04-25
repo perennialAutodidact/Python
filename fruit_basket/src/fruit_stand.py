@@ -122,18 +122,16 @@ def all_fruits():
     ]
     return fruits
 
-def shopping_list(n = 1):
+def shopping_list(n = 10):
     '''
     Returns a list of n randomly selected fruits. 
-    If no value for n is passed, a single fruit is selected
+    If no value for n is passed, a list of 
+    10 random fruits is returned
     '''
 
     try: 
         fruits = all_fruits()
 
-        if n == 1:
-            return choice(fruits)
-        
         fruit_list = []
         for _ in range(n):
             fruit = choice(fruits)
@@ -149,10 +147,11 @@ def shopping_list(n = 1):
         
     return fruit_list
 
-def fruit_prices(n):
+def fruit_prices(n = 10):
     '''
     Returns a dictionary of random fruits and a random
-    price between 0.0 and 1.0
+    price between 0.0 and 1.0. 
+    If no value for n is passed, 10 items will be returned
     '''
     try:
         fruits = all_fruits()
@@ -172,10 +171,12 @@ def fruit_prices(n):
     return inventory
 
     
-def fill_basket(n):
+def fill_basket(n = 10):
     '''
     Returns a dictionary of fruits, their quantity, 
     price_per item and the running total for each item
+    If no value for n is passed, 10 items will be returned
+
     '''
     try:
         fruits = all_fruits()

@@ -5,10 +5,10 @@ with open("README.md") as readme:
 
 setup(
     name="fruit_stand",
-    version="0.0.1",
-    description="Generate lists and dictionaries with fruit names for demonstrating fundamentals in Python.",
+    version="1.0.0",
+    description="Generate lists and dictionaries with fruit names and random pricing data for demonstrating fundamentals in Python.",
     long_description=long_description,
-    long_description_context_type="text/markdown",
+    long_description_content_type="text/markdown",
     author="Keegan Good",
     author_email="keegood8@gmail.com",
     py_modules=['fruit_basket'],
@@ -16,7 +16,7 @@ setup(
     python_requires=">=3.6",
     install_requires=[],
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
