@@ -135,7 +135,7 @@ def shopping_list(n = 1):
             return choice(fruits)
         
         fruit_list = []
-        for i in range(n):
+        for _ in range(n):
             fruit = choice(fruits)
             
             while fruit in fruit_list: 
@@ -158,7 +158,7 @@ def fruit_prices(n):
         fruits = all_fruits()
 
         inventory = {}
-        for i in range(n):
+        for _ in range(n):
             fruit = choice(fruits)
             while fruit in inventory:
                 fruit = choice(fruits)
@@ -181,7 +181,7 @@ def fill_basket(n):
         fruits = all_fruits()
 
         basket = {}
-        for i in range(n):
+        for _ in range(n):
             fruit = choice(fruits)
             while fruit in basket:
                 fruit = choice(fruits)
